@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BB Ģeometriskais modelis</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Inter','Segoe UI',system-ui,sans-serif;padding:14px;background:#f8fafc;color:#0f172a;max-width:780px;margin:0 auto}
+    h1{font-size:16px;font-weight:800;margin-bottom:12px;padding-bottom:10px;border-bottom:2px solid #e2e8f0}
+    h1 small{font-size:11px;font-weight:400;color:#64748b;display:block;margin-top:2px}
+    .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;box-shadow:0 1px 4px rgba(0,0,0,.09)}
+    .ct{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:#64748b;margin-bottom:10px}
+    .g2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+    .ib{background:#f1f5f9;border:1.5px solid #e2e8f0;border-radius:9px;padding:10px 12px;min-width:0}
+    .ib:focus-within{border-color:#3b82f6;background:#eff6ff}
+    .ih{display:flex;align-items:baseline;gap:3px;margin-bottom:5px}
+    .sy{font-style:italic;font-weight:800;font-size:18px;line-height:1}
+    .sb{font-style:italic;font-weight:700;font-size:11px}
+    .id{font-size:10px;color:#94a3b8;flex:1;padding-left:2px}
+    .iv{display:flex;align-items:center;gap:4px;border-top:1px solid #e2e8f0;padding-top:6px}
+    .iv input{flex:1;min-width:0;border:none;background:transparent;font-size:22px;font-weight:800;outline:none;font-family:inherit}
+    .iu{font-size:13px;font-weight:600;color:#94a3b8}
+    .warn{background:#fef3c7;border:1px solid #fbbf24;border-radius:8px;padding:9px 12px;font-size:11px;color:#78350f;margin-bottom:10px;display:none;line-height:1.7}
+    .sh{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:#64748b;margin:14px 0 7px;display:flex;align-items:center;gap:7px}
+    .bg{font-size:9px;font-weight:800;padding:2px 7px;border-radius:3px;color:#fff}
+    .cbox{background:#f8fafc;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.09)}
+    canvas{display:block;width:100%;height:auto}
+    .arow{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:.5px solid #f1f5f9;gap:8px}
+    .arow:last-child{border-bottom:none}
+    .arl{display:flex;align-items:center;gap:8px}
+    .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+    .an{font-size:13px}
+    .av{font-size:16px;font-weight:700;font-variant-numeric:tabular-nums}
+    .srow{margin-top:6px;background:#f1f5f9;border-radius:8px;padding:10px 14px;display:flex;justify-content:space-between;align-items:center}
+    .sl{font-size:13px;font-weight:600}
+    .sv{font-size:18px;font-weight:800;font-variant-numeric:tabular-nums}
+    .vrow{margin-top:6px;background:#dbeafe;border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+    .vl{font-size:13px;font-weight:700;color:#1d4ed8}
+    .vv{font-size:22px;font-weight:800;color:#1d4ed8;font-variant-numeric:tabular-nums}
+    .btn{display:block;width:100%;padding:13px;border:none;border-radius:11px;font-size:14px;font-weight:700;cursor:pointer;color:#fff;font-family:inherit;margin-top:10px;text-align:center;text-decoration:none}
+    .btn:disabled{opacity:.55;cursor:default}
+    .btn-dark{background:#1e293b}
+    .btn-green{background:#059669}
+    .fname-row{display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 12px;background:#f1f5f9;border-radius:9px}
+    .fname-row label{font-size:11px;font-weight:600;color:#64748b;white-space:nowrap}
+    .fname-row input{flex:1;border:1.5px solid #e2e8f0;background:#fff;border-radius:6px;padding:7px 10px;font-size:13px;font-weight:600;outline:none;font-family:inherit}
+    .fname-row input:focus{border-color:#3b82f6}
+    .fname-row span{font-size:12px;color:#94a3b8;font-weight:500}
+    #pvBox{display:none;margin-top:4px}
+    #pvBox img{display:block;width:100%;border-radius:6px;margin-bottom:6px}
+  </style>
+</head>
+<body>
+  <h1>BB Ģeometriskais modelis<small>Hidroizolācijas darbu dokumentācija</small></h1>
+
+  <div id="wb" class="warn"></div>
+
+  <div class="card">
+    <div class="ct">BB Ārējā mala — horizontālā kontūra zemes līmenī</div>
+    <div class="g2">
+      <div class="ib">
+        <div class="ih"><span class="sy">L</span><span class="sb">o</span><span class="id">Garums</span></div>
+        <div class="iv"><input id="iLo" type="text" inputmode="decimal" value="20"><span class="iu">m</span></div>
+      </div>
+      <div class="ib">
+        <div class="ih"><span class="sy">W</span><span class="sb">o</span><span class="id">Platums</span></div>
+        <div class="iv"><input id="iWo" type="text" inputmode="decimal" value="12"><span class="iu">m</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">BB Pamats — stūru horizontālā pozīcija</div>
+    <div class="g2">
+      <div class="ib">
+        <div class="ih"><span class="sy">L</span><span class="sb">b</span><span class="id">Garums (horiz.)</span></div>
+        <div class="iv"><input id="iLb" type="text" inputmode="decimal" value="16"><span class="iu">m</span></div>
+      </div>
+      <div class="ib">
+        <div class="ih"><span class="sy">W</span><span class="sb">b</span><span class="id">Platums (horiz.)</span></div>
+        <div class="iv"><input id="iWb" type="text" inputmode="decimal" value="8"><span class="iu">m</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Stūru slīpuma distances — mērlenta pa virsmu</div>
+    <div class="g2">
+      <div class="ib">
+        <div class="ih"><span class="sy">c</span><span class="sb">1</span><span class="id">↖ Augšā kreisais</span></div>
+        <div class="iv"><input id="ic1" type="text" inputmode="decimal" value="4.5"><span class="iu">m</span></div>
+      </div>
+      <div class="ib">
+        <div class="ih"><span class="sy">c</span><span class="sb">2</span><span class="id">↗ Augšā labais</span></div>
+        <div class="iv"><input id="ic2" type="text" inputmode="decimal" value="4.5"><span class="iu">m</span></div>
+      </div>
+      <div class="ib">
+        <div class="ih"><span class="sy">c</span><span class="sb">3</span><span class="id">↘ Apakšā labais</span></div>
+        <div class="iv"><input id="ic3" type="text" inputmode="decimal" value="5.5"><span class="iu">m</span></div>
+      </div>
+      <div class="ib">
+        <div class="ih"><span class="sy">c</span><span class="sb">4</span><span class="id">↙ Apakšā kreisais</span></div>
+        <div class="iv"><input id="ic4" type="text" inputmode="decimal" value="5.5"><span class="iu">m</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="ct">Enkurjosla (EJ) — horizontāla josla ārpus BB</div>
+    <div class="g2">
+      <div class="ib">
+        <div class="ih"><span class="sy">e</span><span class="id">Platums</span></div>
+        <div class="iv"><input id="iej" type="text" inputmode="decimal" value="2"><span class="iu">m</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sh">Plāna skats</div>
+  <div class="cbox"><canvas id="cP" width="360" height="240"></canvas></div>
+
+  <div class="sh">Griezums <span class="bg" style="background:#dc2626">A-A</span> pa garumu</div>
+  <div class="cbox"><canvas id="cL" width="360" height="160"></canvas></div>
+
+  <div class="sh">Griezums <span class="bg" style="background:#7c3aed">B-B</span> pa platumu</div>
+  <div class="cbox"><canvas id="cT" width="360" height="160"></canvas></div>
+
+  <div class="card" style="margin-top:10px">
+    <div class="ct">Virsmu laukumi un tilpums</div>
+    <div id="al"></div>
+    <div class="srow"><span class="sl">BB virsma kopā (bez EJ)</span><span class="sv" id="aT">—</span></div>
+    <div class="srow"><span class="sl">BB virsma + EJ kopā</span><span class="sv" id="aTej">—</span></div>
+    <div class="vrow"><span class="vl">Tilpums — BB iekšpuse</span><span class="vv" id="aV">—</span></div>
+    <button class="btn btn-dark" id="pdfBtn">📄 Sagatavot PDF priekšskatījumu</button>
+  </div>
+
+  <div id="pvBox">
+    <div class="sh">Priekšskatījums</div>
+    <div class="card" style="padding:10px">
+      <img id="pvP">
+      <img id="pvL">
+      <img id="pvT">
+    </div>
+    <div class="fname-row">
+      <label for="fname">Faila nosaukums:</label>
+      <input type="text" id="fname" value="BB_parametri">
+      <span>.pdf</span>
+    </div>
+    <a id="dlLink" class="btn btn-green" style="display:none">⬇ Pieskarties — saglabāt PDF</a>
+    <button class="btn btn-green" id="dlBtn" style="display:none">⬇ Lejupielādēt PDF</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script>
+    var F = "'Inter','Segoe UI',system-ui,sans-serif";
+    var f1 = function(n){ return (+n).toFixed(1); };
+    var f2 = function(n){ return (+n).toFixed(2); };
+
+    function pd(str, minV){
+      var v = parseFloat(String(str).replace(',','.'));
+      if(!isFinite(v)) return minV !== undefined ? minV : 1;
+      return Math.max(v, minV !== undefined ? minV : 0.01);
+    }
+
+    function getP(){
+      return {
+        Lo:pd(document.getElementById('iLo').value,1),
+        Wo:pd(document.getElementById('iWo').value,1),
+        Lb:pd(document.getElementById('iLb').value,1),
+        Wb:pd(document.getElementById('iWb').value,1),
+        c1:pd(document.getElementById('ic1').value,.1),
+        c2:pd(document.getElementById('ic2').value,.1),
+        c3:pd(document.getElementById('ic3').value,.1),
+        c4:pd(document.getElementById('ic4').value,.1),
+        ej:pd(document.getElementById('iej').value,0)
+      };
+    }
+
+    function geo(s){
+      var dX=(s.Lo-s.Lb)/2, dY=(s.Wo-s.Wb)/2, hd=Math.sqrt(dX*dX+dY*dY);
+      function z(c){ var d=c*c-hd*hd; return d>0?Math.sqrt(d):0; }
+      var z1=z(s.c1),z2=z(s.c2),z3=z(s.c3),z4=z(s.c4);
+      return {
+        dX:dX,dY:dY,hd:hd,z1:z1,z2:z2,z3:z3,z4:z4,
+        P1:[0,0,0],P2:[s.Lo,0,0],P3:[s.Lo,s.Wo,0],P4:[0,s.Wo,0],
+        Q1:[dX,dY,-z1],Q2:[s.Lo-dX,dY,-z2],Q3:[s.Lo-dX,s.Wo-dY,-z3],Q4:[dX,s.Wo-dY,-z4]
+      };
+    }
+
+    function triA(a,b,c){
+      var ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],
+          vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+      var cx=uy*vz-uz*vy,cy=uz*vx-ux*vz,cz=ux*vy-uy*vx;
+      return Math.sqrt(cx*cx+cy*cy+cz*cz)/2;
+    }
+
+    function qA(a,b,c,d){ return triA(a,b,c)+triA(a,c,d); }
+
+    function tV(a,b,c,d){
+      var ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2],
+          vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2],
+          wx=d[0]-a[0],wy=d[1]-a[1],wz=d[2]-a[2];
+      return (ux*(vy*wz-vz*wy)-uy*(vx*wz-vz*wx)+uz*(vx*wy-vy*wx))/6;
+    }
+
+    function calcVol(g){
+      var A=g.P1,B=g.P2,C=g.P3,D=g.P4,E=g.Q1,FF=g.Q2,G=g.Q3,H=g.Q4;
+      return Math.abs(
+        tV(A,B,C,E)+tV(B,C,E,FF)+tV(C,E,FF,G)+
+        tV(A,C,D,E)+tV(C,D,E,G)+tV(D,E,G,H)
+      );
+    }
+
+    // iOS-drošs viewport platums
+    function vpw(){
+      var w = document.documentElement.clientWidth || window.innerWidth || 360;
+      if (w < 200) w = 360;
+      return Math.max(Math.min(w - 28, 780), 100);
+    }
+
+    function mkCtx(id, pw, h){
+      var cv = document.getElementById(id);
+      if(!cv) return null;
+
+      pw = Math.round(pw);
+      if (!pw || pw < 50) return null;
+
+      h = Math.max(Math.round(h), 10);
+
+      cv.width = pw;
+      cv.height = h;
+      cv.style.width = pw+'px';
+      cv.style.height = h+'px';
+
+      var ctx = cv.getContext('2d');
+      if (!ctx) return null;
+      ctx.clearRect(0, 0, pw, h);
+      return ctx;
+    }
+
+    function rrect(ctx,x,y,w,h,r){
+      ctx.beginPath();
+      ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+      ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+      ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+      ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r); ctx.closePath();
+    }
+
+    function arrH(ctx,x,y,a,sz){
+      sz=sz||6; ctx.save(); ctx.translate(x,y); ctx.rotate(a);
+      ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(-sz,-sz*.4); ctx.lineTo(-sz,sz*.4);
+      ctx.closePath(); ctx.fill(); ctx.restore();
+    }
+
+    function pill(ctx,x,y,txt,col,cap,fs){
+      fs=fs||12; col=col||'#0f172a'; cap=cap||9999;
+      ctx.font='600 '+fs+'px '+F;
+      var tw=ctx.measureText(txt).width+14, th=20;
+      x=Math.max(tw/2+2, Math.min(cap-tw/2-2, x));
+      var bx=x-tw/2, by=y-th/2;
+      ctx.fillStyle='rgba(255,255,255,.95)'; rrect(ctx,bx,by,tw,th,4); ctx.fill();
+      ctx.strokeStyle='rgba(0,0,0,.09)'; ctx.lineWidth=.5; rrect(ctx,bx,by,tw,th,4); ctx.stroke();
+      ctx.fillStyle=col; ctx.textAlign='left'; ctx.textBaseline='middle'; ctx.fillText(txt,bx+7,y);
+    }
+
+    // PLAN VIEW
+    function drawPlan(s,g){
+      var Lo=s.Lo,Wo=s.Wo,ej=s.ej,dX=g.dX,dY=g.dY;
+
+      var taa=Math.min(1,Math.max(0,(Wo/2-dY)/Math.max(.001,Wo-2*dY)));
+      var zAaa=g.z1+taa*(g.z4-g.z1), zBaa=g.z2+taa*(g.z3-g.z2);
+      var tbb=Math.min(1,Math.max(0,(Lo/2-dX)/Math.max(.001,Lo-2*dX)));
+      var zAbb=g.z1+tbb*(g.z2-g.z1), zBbb=g.z4+tbb*(g.z3-g.z4);
+
+      var DslA1=Math.sqrt(dX*dX+zAaa*zAaa), DslA2=Math.sqrt(dX*dX+zBaa*zBaa);
+      var DslB1=Math.sqrt(dY*dY+zAbb*zAbb), DslB2=Math.sqrt(dY*dY+zBbb*zBbb);
+
+      var tW=Lo+2*ej, tH=Wo+2*ej, pw=vpw();
+      var PL=22,PR=26,PT=24,PB=40;
+      var sc=Math.max(Math.min((pw-PL-PR)/tW,320/tH),.5);
+      var ch=tH*sc+PT+PB;
+
+      var ctx=mkCtx('cP',pw,ch); if(!ctx) return;
+
+      var ox=PL+(pw-PL-PR-tW*sc)/2+ej*sc, oy=PT+ej*sc;
+      function tx(x){return ox+x*sc;} function ty(y){return oy+y*sc;}
+
+      ctx.fillStyle='#f8fafc'; ctx.fillRect(0,0,pw,ch);
+
+      ctx.fillStyle='rgba(203,213,225,.45)'; ctx.fillRect(tx(-ej),ty(-ej),tW*sc,tH*sc);
+      ctx.fillStyle='#fff'; ctx.fillRect(tx(0),ty(0),Lo*sc,Wo*sc);
+      ctx.fillStyle='rgba(16,185,129,.14)'; ctx.fillRect(tx(dX),ty(dY),s.Lb*sc,s.Wb*sc);
+
+      ctx.setLineDash([5,3]); ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1;
+      ctx.strokeRect(tx(-ej),ty(-ej),tW*sc,tH*sc); ctx.setLineDash([]);
+
+      ctx.strokeStyle='#334155'; ctx.lineWidth=2; ctx.strokeRect(tx(0),ty(0),Lo*sc,Wo*sc);
+      ctx.strokeStyle='#059669'; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
+      ctx.strokeRect(tx(dX),ty(dY),s.Lb*sc,s.Wb*sc); ctx.setLineDash([]);
+
+      // Section cut lines
+      ctx.lineWidth=.9; ctx.strokeStyle='#dc2626'; ctx.setLineDash([8,3,2,3]);
+      ctx.beginPath(); ctx.moveTo(tx(-ej)-5,ty(Wo/2)); ctx.lineTo(tx(Lo+ej)+5,ty(Wo/2)); ctx.stroke();
+      ctx.strokeStyle='#7c3aed';
+      ctx.beginPath(); ctx.moveTo(tx(Lo/2),ty(-ej)-5); ctx.lineTo(tx(Lo/2),ty(Wo+ej)+5); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Dsl slope highlights
+      ctx.lineWidth=3;
+      ctx.strokeStyle='#dc2626';
+      if(dX*sc>5){
+        ctx.beginPath(); ctx.moveTo(tx(0),ty(Wo/2)); ctx.lineTo(tx(dX),ty(Wo/2)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(tx(Lo-dX),ty(Wo/2)); ctx.lineTo(tx(Lo),ty(Wo/2)); ctx.stroke();
+      }
+      ctx.strokeStyle='#7c3aed';
+      if(dY*sc>5){
+        ctx.beginPath(); ctx.moveTo(tx(Lo/2),ty(0)); ctx.lineTo(tx(Lo/2),ty(dY)); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(tx(Lo/2),ty(Wo-dY)); ctx.lineTo(tx(Lo/2),ty(Wo)); ctx.stroke();
+      }
+
+      if(dX*sc>28){
+        pill(ctx,tx(dX/2),ty(Wo/2)-15,'Dsl1='+f2(DslA1)+'m','#dc2626',pw,9);
+        pill(ctx,tx(Lo-dX/2),ty(Wo/2)-15,'Dsl2='+f2(DslA2)+'m','#dc2626',pw,9);
+      }
+      if(dY*sc>28){
+        var lbx=Math.min(tx(Lo/2)+46, pw-45);
+        pill(ctx,lbx,ty(dY/2),'Dsl3='+f2(DslB1)+'m','#7c3aed',pw,9);
+        pill(ctx,lbx,ty(Wo-dY/2),'Dsl4='+f2(DslB2)+'m','#7c3aed',pw,9);
+      }
+
+      // Section labels
+      ctx.font='bold 10px '+F;
+      ctx.fillStyle='#dc2626'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText('A',tx(-ej)-12,ty(Wo/2)); ctx.fillText('A',tx(Lo+ej)+12,ty(Wo/2));
+      ctx.fillStyle='#7c3aed'; ctx.textBaseline='bottom'; ctx.fillText('B',tx(Lo/2),ty(-ej)-8);
+      ctx.textBaseline='top'; ctx.fillText('B',tx(Lo/2),ty(Wo+ej)+5);
+
+      // Corners
+      var corners=[
+        {px:tx(0),py:ty(0),qx:tx(dX),qy:ty(dY),n:'1',z:g.z1,c:s.c1,hx:-1,vx:-1},
+        {px:tx(Lo),py:ty(0),qx:tx(Lo-dX),qy:ty(dY),n:'2',z:g.z2,c:s.c2,hx:1,vx:-1},
+        {px:tx(Lo),py:ty(Wo),qx:tx(Lo-dX),qy:ty(Wo-dY),n:'3',z:g.z3,c:s.c3,hx:1,vx:1},
+        {px:tx(0),py:ty(Wo),qx:tx(dX),qy:ty(Wo-dY),n:'4',z:g.z4,c:s.c4,hx:-1,vx:1}
+      ];
+      corners.forEach(function(cr){
+        ctx.strokeStyle='#cbd5e1'; ctx.lineWidth=.7; ctx.setLineDash([3,3]);
+        ctx.beginPath(); ctx.moveTo(cr.px,cr.py); ctx.lineTo(cr.qx,cr.qy); ctx.stroke(); ctx.setLineDash([]);
+
+        ctx.fillStyle='#1e293b'; ctx.beginPath(); ctx.arc(cr.px,cr.py,7,0,2*Math.PI); ctx.fill();
+        ctx.fillStyle='#fff'; ctx.font='bold 9px '+F; ctx.textAlign='center'; ctx.textBaseline='middle';
+        ctx.fillText(cr.n,cr.px,cr.py);
+
+        ctx.fillStyle='#059669'; ctx.beginPath(); ctx.arc(cr.qx,cr.qy,4,0,2*Math.PI); ctx.fill();
+
+        ctx.font='500 9px '+F; ctx.fillStyle='#065f46';
+        ctx.textAlign=cr.hx<0?'right':'left'; ctx.textBaseline=cr.vx<0?'bottom':'top';
+        ctx.fillText('z'+cr.n+'='+f1(cr.z)+'m',cr.qx+cr.hx*6,cr.qy+cr.vx*4);
+
+        ctx.font='italic 9px '+F; ctx.fillStyle='#64748b';
+        ctx.textAlign=cr.hx<0?'right':'left'; ctx.textBaseline='middle';
+        ctx.fillText('c'+cr.n+'='+f1(cr.c)+'m',(cr.px+cr.qx)/2+cr.hx*5,(cr.py+cr.qy)/2);
+      });
+
+      // Lo dim
+      var gc='#64748b'; ctx.strokeStyle=gc; ctx.fillStyle=gc; ctx.lineWidth=.8;
+      var ldy=ty(-ej)-14;
+      [tx(0),tx(Lo)].forEach(function(x){ctx.beginPath();ctx.moveTo(x,ty(0)-2);ctx.lineTo(x,ldy-2);ctx.stroke();});
+      ctx.beginPath(); ctx.moveTo(tx(0),ldy); ctx.lineTo(tx(Lo),ldy); ctx.stroke();
+      arrH(ctx,tx(0),ldy,Math.PI); arrH(ctx,tx(Lo),ldy,0);
+      pill(ctx,tx(Lo/2),ldy,'Lo = '+f1(Lo)+' m',null,pw);
+
+      // Wo dim
+      var wrx=tx(Lo)+16;
+      [ty(0),ty(Wo)].forEach(function(y){ctx.beginPath();ctx.moveTo(tx(Lo)+2,y);ctx.lineTo(wrx+2,y);ctx.stroke();});
+      ctx.beginPath(); ctx.moveTo(wrx,ty(0)); ctx.lineTo(wrx,ty(Wo)); ctx.stroke();
+      arrH(ctx,wrx,ty(0),-Math.PI/2); arrH(ctx,wrx,ty(Wo),Math.PI/2);
+      ctx.save(); ctx.translate(wrx+14,ty(Wo/2)); ctx.rotate(-Math.PI/2);
+      pill(ctx,0,0,'Wo = '+f1(Wo)+' m',null,9999); ctx.restore();
+
+      if(s.Lb*sc>52){
+        ctx.font='500 9px '+F;ctx.fillStyle='#065f46';ctx.textAlign='center';ctx.textBaseline='bottom';
+        ctx.fillText('Lb='+f1(s.Lb)+'m',tx(dX+s.Lb/2),ty(dY)-3);
+      }
+      if(ej>0&&ej*sc>22){
+        ctx.font='500 9px '+F;ctx.fillStyle=gc;ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText('EJ='+f1(ej)+'m',tx(-ej/2),ty(Wo/2));
+        ctx.fillText('EJ='+f1(ej)+'m',tx(Lo+ej/2),ty(Wo/2));
+      }
+    }
+
+    // SECTIONS
+    function drawSect(isL,s,g){
+      var ej=s.ej,dX=g.dX,dY=g.dY;
+      var span=isL?s.Lo:s.Wo, dH=isL?dX:dY;
+
+      var zA,zB,t;
+      if(isL){
+        t=Math.min(1,Math.max(0,(s.Wo/2-dY)/Math.max(.001,s.Wo-2*dY)));
+        zA=g.z1+t*(g.z4-g.z1); zB=g.z2+t*(g.z3-g.z2);
+      } else {
+        t=Math.min(1,Math.max(0,(s.Lo/2-dX)/Math.max(.001,s.Lo-2*dX)));
+        zA=g.z1+t*(g.z2-g.z1); zB=g.z4+t*(g.z3-g.z4);
+      }
+
+      var maxD=Math.max(zA,zB,.5), col=isL?'#dc2626':'#7c3aed';
+      var fill=isL?'rgba(239,68,68,.09)':'rgba(139,92,246,.1)';
+
+      var pw=vpw(), PL=36,PR=36,PT=34,PB=46;
+      var sc=Math.max(Math.min((pw-PL-PR)/(span+2*ej),170/maxD),.5);
+      var ch=PT+maxD*sc+PB;
+
+      var ctx=mkCtx(isL?'cL':'cT',pw,ch); if(!ctx) return;
+
+      var ox=PL+(pw-PL-PR-(span+2*ej)*sc)/2+ej*sc, pY=PT;
+      function tx(x){return ox+x*sc;}
+
+      ctx.fillStyle='#f8fafc'; ctx.fillRect(0,0,pw,ch);
+
+      ctx.beginPath();
+      ctx.moveTo(tx(0),pY); ctx.lineTo(tx(dH),pY+zA*sc);
+      ctx.lineTo(tx(span-dH),pY+zB*sc); ctx.lineTo(tx(span),pY);
+      ctx.closePath(); ctx.fillStyle=fill; ctx.fill();
+
+      ctx.fillStyle='rgba(203,213,225,.38)';
+      ctx.fillRect(tx(-ej),pY-6,ej*sc,6); ctx.fillRect(tx(span),pY-6,ej*sc,6);
+
+      ctx.strokeStyle='#94a3b8'; ctx.lineWidth=1; ctx.setLineDash([4,3]);
+      ctx.beginPath(); ctx.moveTo(tx(-ej),pY); ctx.lineTo(tx(0),pY); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(tx(span),pY); ctx.lineTo(tx(span+ej),pY); ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.strokeStyle='#059669'; ctx.lineWidth=1.5; ctx.setLineDash([10,5]);
+      ctx.beginPath(); ctx.moveTo(tx(-ej)-6,pY); ctx.lineTo(tx(span+ej)+6,pY); ctx.stroke();
+      ctx.setLineDash([]);
+
+      ctx.fillStyle='#059669'; ctx.font='500 10px '+F; ctx.textAlign='right'; ctx.textBaseline='bottom';
+      ctx.fillText('Zemes virsma',tx(0)-4,pY-4);
+
+      ctx.strokeStyle=col; ctx.lineWidth=2;
+      ctx.beginPath(); ctx.moveTo(tx(0),pY); ctx.lineTo(tx(dH),pY+zA*sc);
+      ctx.lineTo(tx(span-dH),pY+zB*sc); ctx.lineTo(tx(span),pY); ctx.stroke();
+
+      ctx.strokeStyle='#059669'; ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.moveTo(tx(dH),pY+zA*sc); ctx.lineTo(tx(span-dH),pY+zB*sc); ctx.stroke();
+
+      ctx.fillStyle=col; ctx.font='bold 10px '+F; ctx.textAlign='left'; ctx.textBaseline='top';
+      ctx.fillText(isL?'A—A':'B—B',5,5);
+
+      var gc='#64748b'; ctx.strokeStyle=gc; ctx.fillStyle=gc; ctx.lineWidth=.75;
+      var lx=tx(dH),ly=pY+zA*sc,rx=tx(span-dH),ry=pY+zB*sc;
+
+      ctx.beginPath();ctx.moveTo(lx-3,pY);ctx.lineTo(lx-13,pY);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(lx-3,ly);ctx.lineTo(lx-13,ly);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(lx-11,pY);ctx.lineTo(lx-11,ly);ctx.stroke();
+      arrH(ctx,lx-11,pY,-Math.PI/2,5); arrH(ctx,lx-11,ly,Math.PI/2,5);
+      ctx.save();ctx.translate(lx-22,(pY+ly)/2);ctx.rotate(-Math.PI/2);
+      pill(ctx,0,0,'z='+f1(zA)+' m',gc,9999,11);ctx.restore();
+
+      ctx.beginPath();ctx.moveTo(rx+3,pY);ctx.lineTo(rx+13,pY);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(rx+3,ry);ctx.lineTo(rx+13,ry);ctx.stroke();
+      ctx.beginPath();ctx.moveTo(rx+11,pY);ctx.lineTo(rx+11,ry);ctx.stroke();
+      arrH(ctx,rx+11,pY,-Math.PI/2,5); arrH(ctx,rx+11,ry,Math.PI/2,5);
+      ctx.save();ctx.translate(rx+22,(pY+ry)/2);ctx.rotate(-Math.PI/2);
+      pill(ctx,0,0,'z='+f1(zB)+' m',gc,9999,11);ctx.restore();
+
+      var botY=Math.max(ly,ry)+22, dhs=isL?'dX':'dY';
+      ctx.strokeStyle=col; ctx.fillStyle=col; ctx.lineWidth=.75;
+      [[tx(0),tx(dH)],[tx(span-dH),tx(span)]].forEach(function(p){
+        p.forEach(function(x){ctx.beginPath();ctx.moveTo(x,Math.max(ly,ry)+4);ctx.lineTo(x,botY+2);ctx.stroke();});
+        ctx.beginPath();ctx.moveTo(p[0],botY);ctx.lineTo(p[1],botY);ctx.stroke();
+        arrH(ctx,p[0],botY,Math.PI,5); arrH(ctx,p[1],botY,0,5);
+        pill(ctx,(p[0]+p[1])/2,botY,dhs+'='+f2(dH)+' m',col,pw,11);
+      });
+
+      ctx.font='italic 10px '+F; ctx.fillStyle='#94a3b8'; ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(isL?'c1,c4':'c1,c2',tx(dH/2),(pY+ly)/2);
+      ctx.fillText(isL?'c2,c3':'c3,c4',tx(span-dH/2),(pY+ry)/2);
+
+      var DslL=Math.sqrt(dH*dH+zA*zA), DslR=Math.sqrt(dH*dH+zB*zB);
+      var dN1=isL?'Dsl1':'Dsl3', dN2=isL?'Dsl2':'Dsl4';
+      var dslY1=pY+zA*sc/2, dslY2=pY+zB*sc/2;
+
+      ctx.strokeStyle=col; ctx.lineWidth=1.2; ctx.setLineDash([3,2]);
+      ctx.beginPath(); ctx.moveTo(tx(0),pY); ctx.lineTo(tx(dH),pY+zA*sc); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(tx(span-dH),pY+zB*sc); ctx.lineTo(tx(span),pY); ctx.stroke();
+      ctx.setLineDash([]);
+
+      pill(ctx,tx(dH/2),dslY1-16,dN1+' = '+f2(DslL)+' m',col,pw,10);
+      pill(ctx,tx(span-dH/2),dslY2-16,dN2+' = '+f2(DslR)+' m',col,pw,10);
+
+      if(ej>0&&ej*sc>18){
+        ctx.font='500 9px '+F;ctx.fillStyle=gc;ctx.textAlign='center';ctx.textBaseline='middle';
+        ctx.fillText('EJ',tx(-ej/2),pY-3);ctx.fillText('EJ',tx(span+ej/2),pY-3);
+      }
+    }
+
+    function updateStats(s,g){
+      var aP=qA(g.Q1,g.Q2,g.Q3,g.Q4),
+          aN=qA(g.P1,g.P2,g.Q2,g.Q1),
+          aE=qA(g.P2,g.P3,g.Q3,g.Q2),
+          aS=qA(g.P3,g.P4,g.Q4,g.Q3),
+          aW=qA(g.P4,g.P1,g.Q1,g.Q4);
+
+      var aEJ=(s.Lo+2*s.ej)*(s.Wo+2*s.ej)-s.Lo*s.Wo,
+          aBB=aP+aN+aE+aS+aW,
+          v=calcVol(g);
+
+      var rows=[
+        {c:'#10b981',n:'Pamats (telpiskais 4-stūris)',v:aP},
+        {c:'#3b82f6',n:'Siena N',v:aN},
+        {c:'#6366f1',n:'Siena E',v:aE},
+        {c:'#8b5cf6',n:'Siena S',v:aS},
+        {c:'#a855f7',n:'Siena W',v:aW},
+        {c:'#94a3b8',n:'Enkurjosla (EJ)',v:aEJ}
+      ];
+
+      document.getElementById('al').innerHTML=rows.map(function(r){
+        return '<div class="arow"><div class="arl"><div class="dot" style="background:'+r.c+'"></div><div class="an">'+r.n+
+               '</div></div><div class="av">'+f1(r.v)+' m²</div></div>';
+      }).join('');
+
+      document.getElementById('aT').textContent=f1(aBB)+' m²';
+      document.getElementById('aTej').textContent=f1(aBB+aEJ)+' m²';
+      document.getElementById('aV').textContent=f1(v)+' m³';
+    }
+
+    function validate(s,g){
+      var w=[];
+      if(s.Lb>=s.Lo)w.push('Lb≥Lo');
+      if(s.Wb>=s.Wo)w.push('Wb≥Wo');
+      for(var i=1;i<=4;i++){
+        if(s['c'+i]<=g.hd)w.push('c'+i+' pārāk mazs (min '+f2(g.hd)+'m)');
+      }
+      var el=document.getElementById('wb');
+      if(w.length){el.style.display='block';el.innerHTML='⚠ '+w.join(' | ');}
+      else{el.style.display='none';}
+    }
+
+    function toPNG(id){
+      var cv=document.getElementById(id),t=document.createElement('canvas');
+      t.width=cv.width; t.height=cv.height;
+      var ctx=t.getContext('2d');
+      ctx.fillStyle='#fff'; ctx.fillRect(0,0,t.width,t.height); ctx.drawImage(cv,0,0);
+      return {url:t.toDataURL('image/png'),w:parseInt(cv.style.width)||cv.width,h:parseInt(cv.style.height)||cv.height};
+    }
+
+    function makePDF(s,g,iP,iL,iT){
+      var aP=qA(g.Q1,g.Q2,g.Q3,g.Q4),
+          aN=qA(g.P1,g.P2,g.Q2,g.Q1),
+          aE=qA(g.P2,g.P3,g.Q3,g.Q2),
+          aS=qA(g.P3,g.P4,g.Q4,g.Q3),
+          aW=qA(g.P4,g.P1,g.Q1,g.Q4);
+
+      var aEJ=(s.Lo+2*s.ej)*(s.Wo+2*s.ej)-s.Lo*s.Wo,
+          aBB=aP+aN+aE+aS+aW,
+          v=calcVol(g);
+
+      var doc=new window.jspdf.jsPDF('p','mm','a4');
+      var PW=210,ML=14,CW=182,y=38;
+      var C1=[30,41,59],CG=[16,185,129],CB=[29,78,216],CS=[248,250,252];
+
+      function foot(){
+        doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(148,163,184);
+        doc.text('BB Tehniskie parametri | Hidroizolacijas dokumentacija',ML,290);
+        doc.text('lpp.'+doc.getCurrentPageInfo().pageNumber,PW-ML,290,{align:'right'});
+      }
+      function chk(n){if(y+n>272){foot();doc.addPage();y=20;}}
+
+      function shdr(t,r,gg,b){
+        chk(9);r=r||C1[0];gg=gg||C1[1];b=b||C1[2];
+        doc.setFillColor(r,gg,b);doc.rect(ML,y,CW,7,'F');
+        doc.setTextColor(255,255,255);doc.setFontSize(9);doc.setFont('helvetica','bold');
+        doc.text(t,ML+3,y+5);y+=9;
+      }
+      function r2(l1,v1,l2,v2,ev){
+        chk(7);if(ev){doc.setFillColor(CS[0],CS[1],CS[2]);doc.rect(ML,y,CW,7,'F');}
+        doc.setTextColor(C1[0],C1[1],C1[2]);doc.setFontSize(10);doc.setFont('helvetica','normal');
+        doc.text(l1,ML+3,y+5);doc.setFont('helvetica','bold');
+        doc.text(v1,ML+CW/2-4,y+5,{align:'right'});
+        if(l2){doc.setFont('helvetica','normal');doc.text(l2,ML+CW/2+5,y+5);}
+        if(v2){doc.setFont('helvetica','bold');doc.text(v2,ML+CW-1,y+5,{align:'right'});}
+        y+=7;
+      }
+      function r1(l,v,ev){
+        chk(7);if(ev){doc.setFillColor(CS[0],CS[1],CS[2]);doc.rect(ML,y,CW,7,'F');}
+        doc.setTextColor(C1[0],C1[1],C1[2]);doc.setFontSize(10);doc.setFont('helvetica','normal');
+        doc.text(l,ML+3,y+5);doc.setFont('helvetica','bold');
+        doc.text(v,ML+CW-1,y+5,{align:'right'});y+=7;
+      }
+      function hl(l,v,h,rgb,fs){
+        chk(h);doc.setFillColor(rgb[0],rgb[1],rgb[2]);doc.rect(ML,y,CW,h,'F');
+        doc.setTextColor(255,255,255);doc.setFontSize(fs||11);doc.setFont('helvetica','bold');
+        doc.text(l,ML+3,y+h/2+1.5);doc.text(v,ML+CW-1,y+h/2+1.5,{align:'right'});y+=h+2;
+      }
+
+      var now=new Date();
+      doc.setFillColor(C1[0],C1[1],C1[2]);doc.rect(0,0,PW,30,'F');
+      doc.setTextColor(255,255,255);doc.setFontSize(16);doc.setFont('helvetica','bold');
+      doc.text('BB TEHNISKIE PARAMETRI',PW/2,13,{align:'center'});
+      doc.setFontSize(9);doc.setFont('helvetica','normal');
+      doc.text('Datums: '+now.toLocaleDateString('lv-LV'),PW/2,21,{align:'center'});
+      doc.setTextColor(148,163,184);doc.setFontSize(8);
+      doc.text('Hidroizolacijas darbu dokumentacija',PW/2,27,{align:'center'});
+
+      shdr('1. IEVADDATI');
+      r2('BB arejas malas garums Lo',f1(s.Lo)+' m','BB arejas malas platums Wo',f1(s.Wo)+' m',false);
+      r2('BB pamata garums (horiz.) Lb',f1(s.Lb)+' m','BB pamata platums (horiz.) Wb',f1(s.Wb)+' m',true);
+      r2('Sturis 1 aug.kreisais c1',f1(s.c1)+' m','Sturis 2 aug.labais c2',f1(s.c2)+' m',false);
+      r2('Sturis 3 apak.labais c3',f1(s.c3)+' m','Sturis 4 apak.kreisais c4',f1(s.c4)+' m',true);
+      r1('Enkurjosla e',f1(s.ej)+' m',false);y+=5;
+
+      shdr('2. APREKINATIE LIELUMI');
+      r2('Horiz. nobids pa garumu dX',f2(g.dX)+' m','Horiz. nobids pa platumu dY',f2(g.dY)+' m',false);
+      r2('Sturia 1 dzilums z1',f1(g.z1)+' m','Sturia 2 dzilums z2',f1(g.z2)+' m',true);
+      r2('Sturia 3 dzilums z3',f1(g.z3)+' m','Sturia 4 dzilums z4',f1(g.z4)+' m',false);
+      r2('H min',f1(Math.min(g.z1,g.z2,g.z3,g.z4))+' m','H max',f1(Math.max(g.z1,g.z2,g.z3,g.z4))+' m',true);y+=5;
+
+      shdr('3. VIRSMU LAUKUMI');
+      r1('Pamats — telpiskais 4-sturis (2xT)',f1(aP)+' m2',false);
+      r1('Siena N',f1(aN)+' m2',true);
+      r1('Siena E',f1(aE)+' m2',false);
+      r1('Siena S',f1(aS)+' m2',true);
+      r1('Siena W',f1(aW)+' m2',false);
+
+      doc.setDrawColor(226,232,240);doc.setLineWidth(.3);doc.line(ML,y,ML+CW,y);y+=3;
+      r1('BB virsma kopaa (bez EJ)',f1(aBB)+' m2',false);
+      r1('Enkurjosla (EJ)',f1(aEJ)+' m2',true);y+=2;
+
+      hl('BB VIRSMA + EJ KOPAA',f1(aBB+aEJ)+' m2',9,CG,11);
+      hl('TILPUMS — BB IEKSPUSE',f1(v)+' m3',11,CB,13);y+=2;
+      foot();
+
+      doc.addPage();y=0;
+      doc.setFillColor(C1[0],C1[1],C1[2]);doc.rect(0,0,PW,14,'F');
+      doc.setTextColor(255,255,255);doc.setFontSize(11);doc.setFont('helvetica','bold');
+      doc.text('GRAFISKAS SHEMAS',PW/2,9,{align:'center'});y=20;
+
+      function addI(img,title,rgb){
+        var iW=CW,iH=iW*(img.h/img.w);chk(iH+10);
+        doc.setFillColor(rgb[0],rgb[1],rgb[2]);doc.rect(ML,y,CW,6,'F');
+        doc.setTextColor(255,255,255);doc.setFontSize(8);doc.setFont('helvetica','bold');
+        doc.text(title,ML+3,y+4);y+=7;
+        doc.addImage(img.url,'PNG',ML,y,iW,iH);y+=iH+5;
+      }
+
+      addI(iP,'PLANA SKATS',C1);
+      addI(iL,'GRIEZUMS A-A — PA GARUMU',[185,28,28]);
+      addI(iT,'GRIEZUMS B-B — PA PLATUMU',[109,40,217]);
+      foot();
+      return doc;
+    }
+
+    var currentPDF=null;
+
+    function renderSafe(){
+      try{
+        var s=getP(),g=geo(s);
+        validate(s,g);
+        drawPlan(s,g);
+        drawSect(true,s,g);
+        drawSect(false,s,g);
+        updateStats(s,g);
+      }catch(e){
+        if (console && console.warn) console.warn('Render error:', e);
+      }
+    }
+
+    window.addEventListener('load', function(){
+      renderSafe();
+      setTimeout(renderSafe,200);
+      setTimeout(renderSafe,800);
+    });
+
+    window.addEventListener('resize', function(){
+      setTimeout(renderSafe,100);
+    });
+
+    document.getElementById('pdfBtn').onclick=function(){
+      var btn=this;
+      if(!window.jspdf){alert('jsPDF nav ielādēts.');return;}
+      btn.textContent='Gatavo...';btn.disabled=true;
+
+      setTimeout(function(){
+        try{
+          var s=getP(),g=geo(s);
+          var iP=toPNG('cP'),iL=toPNG('cL'),iT=toPNG('cT');
+
+          document.getElementById('pvP').src=iP.url;
+          document.getElementById('pvL').src=iL.url;
+          document.getElementById('pvT').src=iT.url;
+
+          currentPDF=makePDF(s,g,iP,iL,iT);
+
+          var raw=document.getElementById('fname').value.trim().replace(/\.pdf$/i,'');
+          var fname=(raw||'BB_parametri')+'.pdf';
+
+          var blob=currentPDF.output('blob'),burl=URL.createObjectURL(blob);
+
+          var lnk=document.getElementById('dlLink');
+          lnk.href=burl;
+          lnk.setAttribute('download',fname);
+          lnk.style.display='block';
+
+          var dbtn=document.getElementById('dlBtn');
+          dbtn._blob=blob;
+          dbtn._fname=fname;
+          dbtn.style.display='block';
+
+          document.getElementById('pvBox').style.display='block';
+          setTimeout(function(){document.getElementById('pvBox').scrollIntoView({behavior:'smooth'});},80);
+
+          btn.textContent='🔄 Atjaunot PDF';
+          btn.disabled=false;
+        }catch(e){
+          alert('Kļūda veidojot PDF.');
+          btn.textContent='📄 Sagatavot PDF priekšskatījumu';
+          btn.disabled=false;
+        }
+      },50);
+    };
+
+    document.getElementById('dlBtn').onclick=function(){
+      if(!this._blob || !this._fname) return;
+      var a=document.createElement('a');
+      a.href=URL.createObjectURL(this._blob);
+      a.download=this._fname;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    };
+  </script>
+</body>
+</html>
