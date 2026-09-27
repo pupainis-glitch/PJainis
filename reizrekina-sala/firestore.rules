@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function isAdmin() {
+      return signedIn()
+        && request.auth.token.email == "pupainis@gmail.com"
+        && request.auth.token.email_verified == true;
+    }
+
+    // Katrs spēlētājs redz un raksta tikai savu profilu. Admins redz visus.
+    match /users/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+      allow create, update: if signedIn() && request.auth.uid == uid;
+      allow delete: if isAdmin();
+
+      // Izspēlētie raundi: spēlētājs var tikai pievienot, labot nevar neviens.
+      match /rounds/{roundId} {
+        allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
+        allow create: if signedIn() && request.auth.uid == uid;
+        allow update: if false;
+        allow delete: if isAdmin();
+      }
+    }
+
+    // Admina panelim: visu spēlētāju raundi vienā vaicājumā.
+    match /{path=**}/rounds/{roundId} {
+      allow read: if isAdmin();
+    }
+  }
+}

@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Salas Vadības Tornis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lilita+One&family=Nunito:wght@600;800;900&display=swap">
+<style>
+:root{
+  color-scheme:dark;
+  --night:#140b33; --panel:#21155a; --panel2:#2c1d73; --line:#3a2a86;
+  --cyan:#2de2ff; --yellow:#ffd23f; --pink:#ff4fa3; --green:#3dff8a; --red:#ff5a5a;
+  --ink:#f4f0ff; --muted:#a99fdc;
+  --display:"Lilita One","Arial Black",system-ui,sans-serif;
+  --body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0}
+body{background:var(--night);color:var(--ink);font-family:var(--body);font-weight:700;font-size:14px;
+  padding-inline:16px;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+button{font:inherit;color:inherit;cursor:pointer;border:0}
+button:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
+.wrap{max-width:1080px;margin:0 auto;padding-block:20px 40px;display:flex;flex-direction:column;gap:16px}
+header{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--display);font-weight:400;font-size:28px;margin:0;color:var(--yellow);letter-spacing:.01em}
+h1 small{display:block;font-family:var(--body);font-size:13px;color:var(--muted);font-weight:700}
+.me{margin-left:auto;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px}
+.me img{width:32px;height:32px;border-radius:10px}
+.ghost{background:var(--panel2);height:36px;padding:0 14px;border-radius:10px;font-size:13px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px}
+.kpi b{display:block;font-family:var(--display);font-weight:400;font-size:32px;line-height:1.1;font-variant-numeric:tabular-nums}
+.kpi span{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.kpi em{font-style:normal;font-size:12px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media (max-width:820px){.grid2{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.panel h2{font-family:var(--display);font-weight:400;font-size:19px;margin:0 0 4px}
+.panel p.hint{margin:0 0 12px;color:var(--muted);font-size:12px}
+.chart{width:100%;height:auto;display:block}
+.heat{display:grid;grid-template-columns:24px repeat(10,1fr);gap:3px;font-size:11px;font-variant-numeric:tabular-nums}
+.heat div{aspect-ratio:1;display:grid;place-items:center;border-radius:5px;max-width:100%}
+.heat .h{color:var(--muted);background:none}
+.legend{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:var(--muted)}
+.legend i{display:block;width:90px;height:8px;border-radius:4px;background:linear-gradient(90deg,#2a1f66,#7a2f8f,var(--pink),var(--red))}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;font-variant-numeric:tabular-nums;min-width:560px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);font-weight:800;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:10px;border-bottom:1px solid rgba(58,42,134,.5)}
+td.n,th.n{text-align:right}
+.who{display:flex;align-items:center;gap:8px}
+.who img,.who .av{width:26px;height:26px;border-radius:8px;background:var(--pink);display:grid;place-items:center;font-family:var(--display);font-size:13px;flex:none}
+.pill{display:inline-block;padding:2px 8px;border-radius:99px;font-size:11px;font-weight:800}
+.pill.ok{background:rgba(61,255,138,.15);color:var(--green)}
+.pill.no{background:rgba(255,90,90,.15);color:var(--red)}
+.pill.idle{background:rgba(169,159,220,.15);color:var(--muted)}
+.gate{min-height:70vh;display:grid;place-items:center;text-align:center}
+.gate .panel{max-width:380px;display:flex;flex-direction:column;gap:12px}
+.login{display:flex;align-items:center;justify-content:center;gap:10px;height:52px;border-radius:14px;background:#fff;color:#1f1f1f;font-size:15px}
+.err{color:var(--red);font-size:13px;min-height:18px;margin:0}
+.empty{color:var(--muted);text-align:center;padding:20px 0;margin:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <section class="gate" id="gate">
+    <div class="panel">
+      <h1>Vadības tornis<small>Reizrēķina Salas admina panelis</small></h1>
+      <button class="login" id="login">Pieslēgties ar Google</button>
+      <p class="err" id="err"></p>
+    </div>
+  </section>
+
+  <main id="dash" hidden>
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <header>
+        <h1>Vadības tornis<small id="updated">Ielādēju datus...</small></h1>
+        <div class="me"><img id="meImg" alt="" referrerpolicy="no-referrer"><span id="meName"></span>
+          <button class="ghost" id="refresh">Atjaunot</button>
+          <button class="ghost" id="logout">Iziet</button></div>
+      </header>
+
+      <div class="kpis">
+        <div class="kpi"><span>Spēlētāji</span><b id="kUsers">0</b><em id="kNew">&nbsp;</em></div>
+        <div class="kpi"><span>Aktīvi 7 dienās</span><b id="kActive">0</b><em>spēlējuši vismaz raundu</em></div>
+        <div class="kpi"><span>Raundi kopā</span><b id="kRounds">0</b><em id="kToday">&nbsp;</em></div>
+        <div class="kpi"><span>Vidējā precizitāte</span><b id="kAcc">0%</b><em>pēdējie 7 dienu raundi</em></div>
+        <div class="kpi"><span>Spēles laiks</span><b id="kTime">0</b><em>minūtes 7 dienās</em></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h2>Raundi pa dienām</h2>
+          <p class="hint">Pēdējās 14 dienas · zaļš = uzvarēti, violets = zaudēti</p>
+          <svg class="chart" id="chart" viewBox="0 0 560 220" role="img" aria-label="Raundi pa dienām"></svg>
+        </div>
+        <div class="panel">
+          <h2>Grūtākie piemēri</h2>
+          <p class="hint">Kļūdu īpatsvars visiem spēlētājiem kopā</p>
+          <div class="heat" id="heat"></div>
+          <div class="legend">maz kļūdu <i></i> daudz kļūdu</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Spēlētāji</h2>
+        <p class="hint">Sakārtoti pēc pēdējās aktivitātes</p>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Spēlētājs</th><th class="n">Līmenis</th><th class="n">Raundi</th><th class="n">Uzvaras</th><th class="n">Precizitāte</th><th class="n">Rekords</th><th>Pēdējoreiz</th></tr></thead>
+          <tbody id="users"></tbody>
+        </table></div>
+      </div>
+
+      <div class="panel">
+        <h2>Pēdējie raundi</h2>
+        <div class="tablewrap"><table>
+          <thead><tr><th>Laiks</th><th>Spēlētājs</th><th>Rezultāts</th><th class="n">Pareizi</th><th class="n">Punkti</th><th class="n">Ilgums</th><th>Kļūdas</th></tr></thead>
+          <tbody id="recent"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script type="module">
+import { firebaseConfig, ADMIN_EMAIL } from "./firebase-config.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, collectionGroup, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);
+const $=id=>document.getElementById(id);
+const DAY=864e5;
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const toDate=t=>t?.toDate?t.toDate():(t?new Date(t):null);
+const need=l=>100+(l-1)*50;
+const level=xp=>{let l=1;while(xp>=need(l)){xp-=need(l);l++}return l};
+function ago(d){
+  if(!d)return'—';const s=(Date.now()-d)/1000;
+  if(s<60)return'tikko';if(s<3600)return Math.floor(s/60)+' min';if(s<86400)return Math.floor(s/3600)+' h';
+  return Math.floor(s/86400)+' d';
+}
+const fmtTime=d=>d?d.toLocaleString('lv-LV',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'—';
+
+$('login').onclick=async()=>{
+  $('err').textContent='';
+  try{const p=new GoogleAuthProvider();p.setCustomParameters({prompt:'select_account'});await signInWithPopup(auth,p)}
+  catch(e){if(e.code!=='auth/popup-closed-by-user')$('err').textContent='Neizdevās pieslēgties: '+e.code}
+};
+$('logout').onclick=()=>signOut(auth);
+$('refresh').onclick=load;
+
+onAuthStateChanged(auth,u=>{
+  if(!u){$('gate').hidden=false;$('dash').hidden=true;return}
+  if(u.email!==ADMIN_EMAIL){
+    $('err').textContent=`Konts ${u.email} nav administrators.`;signOut(auth);return;
+  }
+  $('gate').hidden=true;$('dash').hidden=false;
+  $('meImg').src=u.photoURL||'';$('meName').textContent=u.displayName||u.email;
+  load();
+});
+
+async function load(){
+  $('updated').textContent='Ielādēju datus...';
+  let users=[],rounds=[];
+  try{
+    const [us,rs]=await Promise.all([getDocs(collection(db,'users')),getDocs(collectionGroup(db,'rounds'))]);
+    users=us.docs.map(d=>({id:d.id,...d.data()}));
+    rounds=rs.docs.map(d=>({uid:d.ref.parent.parent.id,...d.data(),ts:toDate(d.data().ts)})).filter(r=>r.ts);
+  }catch(e){$('updated').textContent='Nevar nolasīt datus: '+(e.code||e.message)+'. Pārbaudi firestore.rules.';return}
+  rounds.sort((a,b)=>b.ts-a.ts);
+  const byId=Object.fromEntries(users.map(u=>[u.id,u]));
+  const now=Date.now(),wk=rounds.filter(r=>now-r.ts<7*DAY);
+  const today=new Date();today.setHours(0,0,0,0);
+
+  // KPI
+  $('kUsers').textContent=users.length;
+  const newWk=users.filter(u=>toDate(u.createdAt)&&now-toDate(u.createdAt)<7*DAY).length;
+  $('kNew').textContent=newWk?`+${newWk} šonedēļ`:'šonedēļ jaunu nav';
+  $('kActive').textContent=new Set(wk.map(r=>r.uid)).size;
+  $('kRounds').textContent=rounds.length;
+  $('kToday').textContent=`${rounds.filter(r=>r.ts>=today).length} šodien`;
+  const ans=wk.reduce((s,r)=>s+(r.answered||0),0),ok=wk.reduce((s,r)=>s+(r.right||0),0);
+  $('kAcc').textContent=ans?Math.round(ok/ans*100)+'%':'—';
+  $('kTime').textContent=Math.round(wk.reduce((s,r)=>s+(r.seconds||0),0)/60);
+
+  chart(rounds,today);heat(users);userTable(users,rounds);recent(rounds,byId);
+  $('updated').textContent='Atjaunots '+new Date().toLocaleTimeString('lv-LV',{hour:'2-digit',minute:'2-digit'});
+}
+
+function chart(rounds,today){
+  const days=[];for(let i=13;i>=0;i--){const d=new Date(today-i*DAY);days.push({d,won:0,lost:0})}
+  rounds.forEach(r=>{const idx=13-Math.floor((today-new Date(r.ts).setHours(0,0,0,0))/DAY);if(idx>=0&&idx<14)r.won?days[idx].won++:days[idx].lost++});
+  const W=560,H=220,L=32,B=28,T=10,max=Math.max(4,...days.map(d=>d.won+d.lost));
+  const step=Math.ceil(max/4),top=step*4,y=v=>H-B-(v/top)*(H-B-T),bw=(W-L)/14;
+  let s='';
+  for(let v=0;v<=top;v+=step){s+=`<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="#3a2a86" stroke-width="1"/><text x="${L-6}" y="${y(v)+4}" fill="#a99fdc" font-size="11" text-anchor="end">${v}</text>`}
+  days.forEach((d,i)=>{
+    const x=L+i*bw+bw*.18,w=bw*.64;
+    if(d.lost)s+=`<rect x="${x}" y="${y(d.lost)}" width="${w}" height="${y(0)-y(d.lost)}" rx="3" fill="#7a4bd6"/>`;
+    if(d.won)s+=`<rect x="${x}" y="${y(d.lost+d.won)}" width="${w}" height="${y(d.lost)-y(d.lost+d.won)}" rx="3" fill="#3dff8a"/>`;
+    if(i%2===1||i===13)s+=`<text x="${x+w/2}" y="${H-10}" fill="#a99fdc" font-size="11" text-anchor="middle">${d.d.getDate()}.${d.d.getMonth()+1}.</text>`;
+  });
+  $('chart').innerHTML=s;
+}
+
+function heat(users){
+  const agg={};
+  users.forEach(u=>{for(const k in (u.facts||{})){const f=u.facts[k];agg[k]=agg[k]||{r:0,w:0};agg[k].r+=f.r||0;agg[k].w+=f.w||0}});
+  const cols=['#2a1f66','#4a2677','#7a2f8f','#c23a98','#ff4fa3','#ff5a5a'];
+  let h='<div class="h"></div>';for(let b=1;b<=10;b++)h+=`<div class="h">×${b}</div>`;
+  for(let a=1;a<=10;a++){
+    h+=`<div class="h">${a}</div>`;
+    for(let b=1;b<=10;b++){
+      const f=agg[a+'x'+b],t=f?f.r+f.w:0;
+      if(!t){h+=`<div style="background:#1a1048;color:#4a3d8a" title="${a}×${b}: nav spēlēts">·</div>`;continue}
+      const rate=f.w/t,c=cols[Math.min(5,Math.round(rate*10))];
+      h+=`<div style="background:${c}" title="${a}×${b}: ${f.w} kļūdas no ${t}">${rate>=.2?Math.round(rate*100):''}</div>`;
+    }
+  }
+  $('heat').innerHTML=h;
+}
+
+function userTable(users,rounds){
+  const st={};rounds.forEach(r=>{const s=st[r.uid]=st[r.uid]||{a:0,ok:0,last:null};s.a+=r.answered||0;s.ok+=r.right||0;if(!s.last||r.ts>s.last)s.last=r.ts});
+  const rows=users.map(u=>({...u,last:st[u.id]?.last||toDate(u.lastSeen),acc:st[u.id]?.a?Math.round(st[u.id].ok/st[u.id].a*100):null}))
+    .sort((a,b)=>(b.last||0)-(a.last||0));
+  if(!rows.length){$('users').innerHTML='<tr><td colspan="7"><p class="empty">Vēl neviens nav pieslēdzies.</p></td></tr>';return}
+  $('users').innerHTML=rows.map(u=>{
+    const name=u.name||'Bez vārda',active=u.last&&Date.now()-u.last<7*DAY;
+    return `<tr><td><div class="who">${u.photo?`<img src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<div class="av">${esc(name[0])}</div>`}${esc(name)}</div></td>
+    <td class="n">${level(u.xp||0)}</td><td class="n">${u.rounds||0}</td><td class="n">${u.wins||0}</td>
+    <td class="n">${u.acc==null?'—':u.acc+'%'}</td><td class="n">${u.best||0}</td>
+    <td><span class="pill ${active?'ok':'idle'}">${ago(u.last)}</span></td></tr>`}).join('');
+}
+
+function recent(rounds,byId){
+  const r=rounds.slice(0,20);
+  if(!r.length){$('recent').innerHTML='<tr><td colspan="7"><p class="empty">Vēl nav izspēlētu raundu.</p></td></tr>';return}
+  $('recent').innerHTML=r.map(x=>`<tr><td>${fmtTime(x.ts)}</td><td>${esc(byId[x.uid]?.name||'—')}</td>
+    <td><span class="pill ${x.won?'ok':'no'}">${x.won?'Uzvara':'Zaudējums'}</span></td>
+    <td class="n">${x.right||0}/${x.answered||0}</td><td class="n">${x.score||0}</td><td class="n">${x.seconds||0} s</td>
+    <td>${esc((x.mistakes||[]).map(m=>m.replace('x','×')).join(', '))||'—'}</td></tr>`).join('');
+}
+</script>
+</body>
+</html>
