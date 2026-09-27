@@ -167,7 +167,7 @@ async function load(){
   $('updated').textContent='Ielādēju datus...';
   let users=[],rounds=[];
   try{
-    const [us,rs]=await Promise.all([getDocs(collection(db,'users')),getDocs(collectionGroup(db,'rounds'))]);
+    const [us,rs]=await Promise.all([getDocs(collection(db,'sala_users')),getDocs(collectionGroup(db,'sala_rounds'))]);
     users=us.docs.map(d=>({id:d.id,...d.data()}));
     rounds=rs.docs.map(d=>({uid:d.ref.parent.parent.id,...d.data(),ts:toDate(d.data().ts)})).filter(r=>r.ts);
   }catch(e){$('updated').textContent='Nevar nolasīt datus: '+(e.code||e.message)+'. Pārbaudi firestore.rules.';return}

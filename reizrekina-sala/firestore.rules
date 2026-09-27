@@ -2,31 +2,32 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    function signedIn() { return request.auth != null; }
-    function isAdmin() {
-      return signedIn()
-        && request.auth.token.email == "pupainis@gmail.com"
-        && request.auth.token.email_verified == true;
-    }
+    // ===== REIZRĒĶINA SALA — sākums =====
+    // Ja projektā jau ir citi noteikumi, iekopē tikai šo bloku (līdz "beigas")
+    // iekšā esošajā "match /databases/{database}/documents { ... }".
 
-    // Katrs spēlētājs redz un raksta tikai savu profilu. Admins redz visus.
-    match /users/{uid} {
-      allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
-      allow create, update: if signedIn() && request.auth.uid == uid;
-      allow delete: if isAdmin();
+    match /sala_users/{uid} {
+      allow read: if request.auth != null
+        && (request.auth.uid == uid
+            || (request.auth.token.email == "pupainis@gmail.com" && request.auth.token.email_verified == true));
+      allow create, update: if request.auth != null && request.auth.uid == uid;
+      allow delete: if request.auth != null && request.auth.token.email == "pupainis@gmail.com" && request.auth.token.email_verified == true;
 
-      // Izspēlētie raundi: spēlētājs var tikai pievienot, labot nevar neviens.
-      match /rounds/{roundId} {
-        allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
-        allow create: if signedIn() && request.auth.uid == uid;
+      match /sala_rounds/{roundId} {
+        allow read: if request.auth != null
+          && (request.auth.uid == uid
+              || (request.auth.token.email == "pupainis@gmail.com" && request.auth.token.email_verified == true));
+        allow create: if request.auth != null && request.auth.uid == uid;
         allow update: if false;
-        allow delete: if isAdmin();
+        allow delete: if request.auth != null && request.auth.token.email == "pupainis@gmail.com" && request.auth.token.email_verified == true;
       }
     }
 
-    // Admina panelim: visu spēlētāju raundi vienā vaicājumā.
-    match /{path=**}/rounds/{roundId} {
-      allow read: if isAdmin();
+    // Admina panelim: visu spēlētāju raundi vienā vaicājumā
+    match /{path=**}/sala_rounds/{roundId} {
+      allow read: if request.auth != null && request.auth.token.email == "pupainis@gmail.com" && request.auth.token.email_verified == true;
     }
+
+    // ===== REIZRĒĶINA SALA — beigas =====
   }
 }

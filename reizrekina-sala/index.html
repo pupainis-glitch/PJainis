@@ -248,7 +248,7 @@ const CLOUD_FIELDS=['xp','coins','wins','best','bestStreak','rounds','tables','f
 function cloudPayload(){const o={};CLOUD_FIELDS.forEach(k=>o[k]=S[k]);o.lastSeen=serverTimestamp();return o}
 async function pushCloud(){
   if(!ME)return;
-  try{await setDoc(doc(fs,'users',ME.uid),cloudPayload(),{merge:true});$('sync').textContent='Saglabāts mākonī ✓'}
+  try{await setDoc(doc(fs,'sala_users',ME.uid),cloudPayload(),{merge:true});$('sync').textContent='Saglabāts mākonī ✓'}
   catch(e){$('sync').textContent='Neizdevās saglabāt mākonī, mēģināšu vēlreiz'}
 }
 const save=()=>{
@@ -269,7 +269,7 @@ async function onLogin(user){
   $('loginBig').hidden=true;$('loginNote').hidden=true;
   $('sync').textContent='Ielādēju progresu...';
   try{
-    const ref=doc(fs,'users',user.uid);const snap=await getDoc(ref);
+    const ref=doc(fs,'sala_users',user.uid);const snap=await getDoc(ref);
     if(snap.exists()){
       const c=snap.data();
       // apvieno: ņem lielāko, lai nekas nepazūd
@@ -307,7 +307,7 @@ $('logout').onclick=async()=>{await pushCloud();await signOut(auth);
   $('acctSheet').hidden=true;chips();hud()};
 async function logRound(r){
   if(!ME)return;
-  try{await addDoc(collection(fs,'users',ME.uid,'rounds'),{...r,ts:serverTimestamp()})}catch(e){}
+  try{await addDoc(collection(fs,'sala_users',ME.uid,'sala_rounds'),{...r,ts:serverTimestamp()})}catch(e){}
 }
 
 /* ---------- sound ---------- */

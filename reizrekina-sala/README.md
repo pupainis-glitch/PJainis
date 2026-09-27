@@ -10,7 +10,7 @@ Battle royale stila reizrēķina spēle ar Google pieslēgšanos un admina panel
 ## Uzstādīšana (vienreiz, ~15 min)
 
 ### 1. Firebase projekts
-1. Atver https://console.firebase.google.com → **Add project** → nosaukums `reizrekina-sala` → Google Analytics var izslēgt.
+1. Atver https://console.firebase.google.com → **Add project** (izmantojam esošo projektu **BB-layer**).
 2. **Build → Authentication → Get started → Sign-in method → Google → Enable**. Norādi savu e-pastu kā support e-pastu, Save.
 3. **Authentication → Settings → Authorized domains → Add domain**: `pupainis-glitch.github.io`
 4. **Build → Firestore Database → Create database** → atrašanās vieta `eur3 (europe-west)` → **Start in production mode**.
