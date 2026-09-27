@@ -1,13 +1,13 @@
-// Firebase konfigurācija.
-// Ielīmē šeit vērtības no Firebase konsoles:
-// Project settings → General → Your apps → Web app → SDK setup and configuration → Config
+// Firebase konfigurācija (projekts BB-layer, web lietotne "sala").
+// Šīs web atslēgas nav slepenas — datus aizsargā firestore.rules.
 export const firebaseConfig = {
-  apiKey: "IELĪMĒ_ŠEIT",
-  authDomain: "IELĪMĒ_ŠEIT.firebaseapp.com",
-  projectId: "IELĪMĒ_ŠEIT",
-  storageBucket: "IELĪMĒ_ŠEIT.appspot.com",
-  messagingSenderId: "IELĪMĒ_ŠEIT",
-  appId: "IELĪMĒ_ŠEIT"
+  apiKey: "AIzaSyAZDSoU6OOGpxmEFZeEwlO7bfRnhQruNx0",
+  authDomain: "bb-layer.firebaseapp.com",
+  projectId: "bb-layer",
+  storageBucket: "bb-layer.firebasestorage.app",
+  messagingSenderId: "56599651442",
+  appId: "1:56599651442:web:96f2bfa0d4304966238eeb",
+  measurementId: "G-L02HYGQ38P"
 };
 
 // Tikai šis e-pasts var atvērt admina paneli (admin.html).
