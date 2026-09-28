@@ -104,16 +104,20 @@ button:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
 /* result */
 .win{font-family:var(--display);text-align:center;font-size:clamp(44px,13vw,72px);line-height:.95;margin:16px 0 0;color:var(--yellow);text-shadow:0 5px 0 #b3440a,0 10px 0 #0d0726}
 .win.lose{color:var(--pink);text-shadow:0 5px 0 #7a1446,0 10px 0 #0d0726}
-.chest{margin:6px auto 0;width:170px;height:150px;position:relative;cursor:pointer;background:none}
-.chest .lid,.chest .box{position:absolute;left:10px;right:10px;border:4px solid #0d0726}
-.chest .box{bottom:0;height:80px;border-radius:0 0 14px 14px;background:var(--rar,#8a8aa8)}
-.chest .lid{bottom:76px;height:52px;border-radius:40px 40px 6px 6px;background:var(--rar,#8a8aa8);filter:brightness(1.15);transform-origin:10% 100%;transition:transform .5s cubic-bezier(.3,1.6,.5,1)}
-.chest .lock{position:absolute;left:50%;bottom:62px;width:28px;height:34px;margin-left:-14px;background:var(--yellow);border:4px solid #0d0726;border-radius:8px;z-index:2}
-.chest.open .lid{transform:rotate(-38deg) translate(-6px,-10px)}
-.chest.open .lock{opacity:0}
-.chest.shake{animation:shake .4s infinite}
-.glow{position:absolute;inset:-30px;border-radius:50%;background:radial-gradient(circle,var(--rar) 0%,transparent 65%);opacity:0;transition:opacity .5s;z-index:-1}
-.chest.open .glow{opacity:.7}
+.chest{margin:0 auto;width:min(300px,78vw);aspect-ratio:3/2;max-width:100%;position:relative;cursor:pointer;background:none;border-radius:50%;isolation:isolate}
+.chest:focus-visible{outline:3px dashed var(--cyan);outline-offset:4px}
+.crab{width:100%;height:100%;display:block;object-fit:contain;mix-blend-mode:screen;pointer-events:none;
+  -webkit-mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);
+          mask-image:radial-gradient(ellipse 50% 50% at 50% 50%,#000 62%,transparent 100%);
+  transform-origin:50% 85%}
+.chest.shake .crab{animation:crabDance 1.1s ease-in-out infinite}
+.chest.open .crab{animation:crabJump .7s cubic-bezier(.3,1.6,.5,1) 1,crabHappy 2.4s ease-in-out .7s infinite}
+@keyframes crabDance{0%,100%{transform:translateX(0) rotate(0)}20%{transform:translateX(-10px) rotate(-5deg)}40%{transform:translateX(0) rotate(0) translateY(-6px)}60%{transform:translateX(10px) rotate(5deg)}80%{transform:translateX(0) rotate(0) translateY(-6px)}}
+@keyframes crabJump{0%{transform:scale(1)}35%{transform:translateY(-28px) scale(1.08)}70%{transform:translateY(0) scale(.96,1.04)}100%{transform:scale(1)}}
+@keyframes crabHappy{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.glow{position:absolute;inset:6%;border-radius:50%;background:radial-gradient(circle,var(--rar) 0%,transparent 68%);opacity:0;transition:opacity .5s;z-index:-1}
+.chest.open .glow{opacity:.85}
+.coinpop{position:absolute;left:50%;top:18%;transform:translateX(-50%);font-family:var(--display);font-size:30px;color:var(--yellow);text-shadow:0 3px 0 #b3440a;pointer-events:none;animation:rise 1.4s ease-out forwards;white-space:nowrap}
 .rarity{text-align:center;font-family:var(--display);font-size:24px;min-height:30px;margin:0}
 .tap{text-align:center;color:var(--muted);margin:0;font-size:14px}
 .rgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -206,11 +210,11 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
   <section class="screen" id="result" hidden>
     <h2 class="win" id="winTitle">#1 UZVARA!</h2>
     <p class="sub" id="winSub">Tu izdzīvoji līdz galam</p>
-    <button class="chest" id="chest" aria-label="Atvērt lādi">
-      <div class="glow"></div><div class="lid"></div><div class="box"></div><div class="lock"></div>
+    <button class="chest" id="chest" aria-label="Saņemt balvu no krabja">
+      <div class="glow"></div><img class="crab" src="krabis.webp" alt="Skaitļu krabis">
     </button>
     <p class="rarity" id="rarity"></p>
-    <p class="tap" id="tap">Pieskaries lādei, lai atvērtu!</p>
+    <p class="tap" id="tap">Pieskaries krabim, lai saņemtu balvu!</p>
     <div class="rgrid stats" style="grid-template-columns:repeat(2,1fr)">
       <div class="stat"><b id="rScore">0</b><span>Punkti</span></div>
       <div class="stat"><b id="rAcc">0%</b><span>Precizitāte</span></div>
@@ -492,10 +496,10 @@ function finish(){
   G.levelUp=levelInfo(S.xp).l>before;
   $('winTitle').textContent=won?'#1 UZVARA!':'ZONA TEVI NOĶĒRA';
   $('winTitle').classList.toggle('lose',!won);
-  $('winSub').textContent=won?(acc===100?'Nevainojams raunds!':'Tu izdzīvoji līdz galam'):'Nekas, nākamreiz noteikti! Mierinājuma lāde tev tik un tā.';
+  $('winSub').textContent=won?(acc===100?'Nevainojams raunds!':'Tu izdzīvoji līdz galam'):'Nekas, nākamreiz noteikti! Krabim tev tik un tā ir balva.';
   $('rScore').textContent=G.score;$('rAcc').textContent=acc+'%';$('rXp').textContent='+'+xp;$('rCoins').textContent='+'+G.earned;
   const ch=$('chest');ch.className='chest shake';ch.style.setProperty('--rar',G.rar.c);
-  $('rarity').textContent='';$('tap').textContent='Pieskaries lādei, lai atvērtu!';
+  $('rarity').textContent='';$('tap').textContent='Pieskaries krabim, lai saņemtu balvu!';
   show('result');hud();
   if(won){sfx.win();confetti()}
 }
@@ -503,8 +507,9 @@ $('chest').onclick=()=>{
   if(!G||G.opened)return;G.opened=true;
   const ch=$('chest');ch.classList.remove('shake');ch.classList.add('open');
   sfx.chest();
-  $('rarity').textContent=`${G.rar.n} lāde!`;$('rarity').style.color=G.rar.c;
-  $('tap').textContent=`Lādē bija ${G.rar.coins} monētas`+(G.levelUp?' · JAUNS LĪMENIS!':'');
+  const pop=document.createElement('div');pop.className='coinpop';pop.textContent=`+${G.rar.coins} 🪙`;ch.appendChild(pop);setTimeout(()=>pop.remove(),1400);
+  $('rarity').textContent=`${G.rar.n} balva!`;$('rarity').style.color=G.rar.c;
+  $('tap').textContent=`Krabis iedeva ${G.rar.coins} monētas`+(G.levelUp?' · JAUNS LĪMENIS!':'');
   if(G.rar.coins>=50||G.levelUp)confetti();
 };
 $('play').onclick=start;$('again').onclick=start;
