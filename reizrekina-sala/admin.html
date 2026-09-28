@@ -62,6 +62,16 @@ td.n,th.n{text-align:right}
 .login{display:flex;align-items:center;justify-content:center;gap:10px;height:52px;border-radius:14px;background:#fff;color:#1f1f1f;font-size:15px}
 .err{color:var(--red);font-size:13px;min-height:18px;margin:0}
 .empty{color:var(--muted);text-align:center;padding:20px 0;margin:0}
+select{background:var(--panel2);color:var(--ink);border:1px solid var(--line);border-radius:10px;height:34px;padding:0 10px;font:inherit;font-size:13px;max-width:100%}
+.ptop{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.ptop h2{margin:0}
+.s0{background:#1a1048!important;color:#4a3d8a}.s1{background:#ff5a5a!important;color:#3a0808}.s2{background:#ffd23f!important;color:#3b2400}.s3{background:#3dff8a!important;color:#063a1c}
+.legend3{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;font-size:11px;color:var(--muted)}
+.legend3 span{display:flex;align-items:center;gap:5px}.legend3 i{width:10px;height:10px;border-radius:3px}
+.conf{display:grid;gap:6px;font-size:13px}
+.conf div{display:grid;grid-template-columns:70px 1fr 40px;gap:8px;align-items:center}
+.conf b{font-family:var(--display);font-weight:400;font-size:16px}
+.conf i{display:block;height:8px;border-radius:4px;background:var(--pink)}
 </style>
 </head>
 <body>
@@ -89,6 +99,8 @@ td.n,th.n{text-align:right}
         <div class="kpi"><span>Raundi kopā</span><b id="kRounds">0</b><em id="kToday">&nbsp;</em></div>
         <div class="kpi"><span>Vidējā precizitāte</span><b id="kAcc">0%</b><em>pēdējie 7 dienu raundi</em></div>
         <div class="kpi"><span>Spēles laiks</span><b id="kTime">0</b><em>minūtes 7 dienās</em></div>
+        <div class="kpi"><span>Vid. atbildes laiks</span><b id="kRt">—</b><em id="kRtSub">pareizās atbildes, 7 dienas</em></div>
+        <div class="kpi"><span>Apgūti (vidēji)</span><b id="kMast">—</b><em>no 100 piemēriem</em></div>
       </div>
 
       <div class="grid2">
@@ -98,10 +110,24 @@ td.n,th.n{text-align:right}
           <svg class="chart" id="chart" viewBox="0 0 560 220" role="img" aria-label="Raundi pa dienām"></svg>
         </div>
         <div class="panel">
-          <h2>Grūtākie piemēri</h2>
-          <p class="hint">Kļūdu īpatsvars visiem spēlētājiem kopā</p>
+          <div class="ptop"><h2>Reizrēķina karte</h2><select id="who" aria-label="Spēlētājs"></select></div>
+          <p class="hint" id="heatHint">Kļūdu īpatsvars visiem spēlētājiem kopā</p>
           <div class="heat" id="heat"></div>
-          <div class="legend">maz kļūdu <i></i> daudz kļūdu</div>
+          <div class="legend" id="legErr">maz kļūdu <i></i> daudz kļūdu</div>
+          <div class="legend3" id="legMast" hidden><span><i class="s3"></i>Apgūts</span><span><i class="s2"></i>Zina, bet lēni</span><span><i class="s1"></i>Kļūdās</span><span><i class="s0"></i>Nav bijis</span></div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel">
+          <h2>Apgūto piemēru progress</h2>
+          <p class="hint" id="progHint">Izvēlies spēlētāju kartē augšā</p>
+          <svg class="chart" id="progChart" viewBox="0 0 560 200" role="img" aria-label="Apgūto piemēru skaits pa dienām"></svg>
+        </div>
+        <div class="panel">
+          <h2>Biežākās sajaukšanas</h2>
+          <p class="hint">Kuru nepareizo atbildi izvēlas visbiežāk</p>
+          <div class="conf" id="conf"></div>
         </div>
       </div>
 
@@ -109,7 +135,7 @@ td.n,th.n{text-align:right}
         <h2>Spēlētāji</h2>
         <p class="hint">Sakārtoti pēc pēdējās aktivitātes</p>
         <div class="tablewrap"><table>
-          <thead><tr><th>Spēlētājs</th><th class="n">Līmenis</th><th class="n">Raundi</th><th class="n">Uzvaras</th><th class="n">Precizitāte</th><th class="n">Rekords</th><th>Pēdējoreiz</th></tr></thead>
+          <thead><tr><th>Spēlētājs</th><th class="n">Līmenis</th><th class="n">Raundi</th><th class="n">Uzvaras</th><th class="n">Precizitāte</th><th class="n">Apgūti</th><th class="n">Vid. laiks</th><th class="n">🔥 Dienas</th><th class="n">Monētas</th><th>Pēdējoreiz</th></tr></thead>
           <tbody id="users"></tbody>
         </table></div>
       </div>
@@ -117,7 +143,7 @@ td.n,th.n{text-align:right}
       <div class="panel">
         <h2>Pēdējie raundi</h2>
         <div class="tablewrap"><table>
-          <thead><tr><th>Laiks</th><th>Spēlētājs</th><th>Rezultāts</th><th class="n">Pareizi</th><th class="n">Punkti</th><th class="n">Ilgums</th><th>Kļūdas</th></tr></thead>
+          <thead><tr><th>Laiks</th><th>Spēlētājs</th><th>Rezultāts</th><th class="n">Pareizi</th><th class="n">Punkti</th><th class="n">Vid. laiks</th><th>Kļūdas (izvēlētā atbilde)</th></tr></thead>
           <tbody id="recent"></tbody>
         </table></div>
       </div>
@@ -163,6 +189,7 @@ onAuthStateChanged(auth,u=>{
   load();
 });
 
+let USERS=[],ROUNDS=[];
 async function load(){
   $('updated').textContent='Ielādēju datus...';
   let users=[],rounds=[];
@@ -187,7 +214,17 @@ async function load(){
   $('kAcc').textContent=ans?Math.round(ok/ans*100)+'%':'—';
   $('kTime').textContent=Math.round(wk.reduce((s,r)=>s+(r.seconds||0),0)/60);
 
-  chart(rounds,today);heat(users);userTable(users,rounds);recent(rounds,byId);
+  const rts=wk.flatMap(r=>(r.answers||[]).filter(a=>a.ok).map(a=>a.t));
+  $('kRt').textContent=rts.length?(rts.reduce((a,b)=>a+b,0)/rts.length).toFixed(1)+' s':'—';
+  const withM=users.filter(u=>u.mastered!=null);
+  $('kMast').textContent=withM.length?Math.round(withM.reduce((a,u)=>a+u.mastered,0)/withM.length):'—';
+
+  USERS=users;ROUNDS=rounds;
+  const sel=$('who'),prev=sel.value;
+  sel.innerHTML='<option value="">Visi kopā (kļūdas)</option>'+users.map(u=>`<option value="${esc(u.id)}">${esc(u.name||'Bez vārda')}</option>`).join('');
+  sel.value=users.some(u=>u.id===prev)?prev:(users.length===1?users[0].id:'');
+  sel.onchange=()=>{heat();progChart()};
+  chart(rounds,today);heat();progChart();confusions(rounds);userTable(users,rounds);recent(rounds,byId);
   $('updated').textContent='Atjaunots '+new Date().toLocaleTimeString('lv-LV',{hour:'2-digit',minute:'2-digit'});
 }
 
@@ -207,11 +244,29 @@ function chart(rounds,today){
   $('chart').innerHTML=s;
 }
 
-function heat(users){
-  const agg={};
-  users.forEach(u=>{for(const k in (u.facts||{})){const f=u.facts[k];agg[k]=agg[k]||{r:0,w:0};agg[k].r+=f.r||0;agg[k].w+=f.w||0}});
-  const cols=['#2a1f66','#4a2677','#7a2f8f','#c23a98','#ff4fa3','#ff5a5a'];
+function fstatus(f){
+  if(!f)return 0;
+  if(!f.h||!f.h.length)return (f.r||f.w)?(f.r?2:1):0;
+  const h=f.h.slice(-3),t=(f.t||[]).slice(-3);
+  if(h.length===3&&h.every(x=>x===1)&&t.length===3&&t.every(x=>x<3))return 3;
+  return h[h.length-1]===0?1:2;
+}
+function heat(){
+  const uid=$('who').value;
   let h='<div class="h"></div>';for(let b=1;b<=10;b++)h+=`<div class="h">×${b}</div>`;
+  $('legErr').hidden=!!uid;$('legMast').hidden=!uid;
+  if(uid){
+    const u=USERS.find(x=>x.id===uid)||{},F=u.facts||{};
+    $('heatHint').textContent=`${u.name||'Spēlētājs'}: apgūti ${u.mastered??'—'} no 100. Apgūts = pēdējās 3 reizes pareizi un ātrāk par 3 s.`;
+    for(let a=1;a<=10;a++){h+=`<div class="h">${a}</div>`;
+      for(let b=1;b<=10;b++){const f=F[a+'x'+b],st=fstatus(f),t=f&&f.t&&f.t.length?(f.t.reduce((x,y)=>x+y,0)/f.t.length).toFixed(1)+' s':'—';
+        h+=`<div class="s${st}" title="${a}×${b}: ${f?f.r+' pareizi, '+f.w+' kļūdas, vid. '+t:'nav bijis'}">${a*b}</div>`}}
+    $('heat').innerHTML=h;return;
+  }
+  $('heatHint').textContent='Kļūdu īpatsvars visiem spēlētājiem kopā';
+  const agg={};
+  USERS.forEach(u=>{for(const k in (u.facts||{})){const f=u.facts[k];agg[k]=agg[k]||{r:0,w:0};agg[k].r+=f.r||0;agg[k].w+=f.w||0}});
+  const cols=['#2a1f66','#4a2677','#7a2f8f','#c23a98','#ff4fa3','#ff5a5a'];
   for(let a=1;a<=10;a++){
     h+=`<div class="h">${a}</div>`;
     for(let b=1;b<=10;b++){
@@ -224,16 +279,50 @@ function heat(users){
   $('heat').innerHTML=h;
 }
 
+function progChart(){
+  const uid=$('who').value,svg=$('progChart');
+  const list=uid?USERS.filter(u=>u.id===uid):USERS;
+  const W=560,H=200,L=32,B=26,T=10;
+  const days=[];const today=new Date();today.setHours(0,0,0,0);
+  for(let i=29;i>=0;i--){const d=new Date(today-i*DAY);days.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'))}
+  const cols=['#2de2ff','#3dff8a','#ffd23f','#ff4fa3','#b04bff'];
+  $('progHint').textContent=uid?'Apgūto piemēru skaits (no 100) pēdējās 30 dienās':'Visi spēlētāji · apgūto piemēru skaits pēdējās 30 dienās';
+  const y=v=>H-B-(v/100)*(H-B-T),x=i=>L+i*(W-L-10)/29;
+  let s='';
+  [0,25,50,75,100].forEach(v=>{s+=`<line x1="${L}" x2="${W}" y1="${y(v)}" y2="${y(v)}" stroke="#3a2a86"/><text x="${L-6}" y="${y(v)+4}" fill="#a99fdc" font-size="11" text-anchor="end">${v}</text>`});
+  [0,7,14,21,29].forEach(i=>{const p=days[i].split('-');s+=`<text x="${x(i)}" y="${H-8}" fill="#a99fdc" font-size="11" text-anchor="middle">${+p[2]}.${+p[1]}.</text>`});
+  let any=false;
+  list.slice(0,5).forEach((u,ui)=>{
+    const log=u.masteryLog||{};let last=null,pts=[];
+    days.forEach((d,i)=>{if(log[d]!=null)last=log[d];if(last!=null)pts.push([x(i),y(last)])});
+    if(!pts.length)return;any=true;const c=cols[ui%5];
+    s+=`<polyline points="${pts.map(p=>p.join(',')).join(' ')}" fill="none" stroke="${c}" stroke-width="2.5" stroke-linejoin="round"/>`;
+    const e=pts[pts.length-1];s+=`<circle cx="${e[0]}" cy="${e[1]}" r="4" fill="${c}"/><text x="${Math.min(e[0],W-60)}" y="${e[1]-8}" fill="${c}" font-size="11">${esc((u.name||'').split(' ')[0])} ${last}</text>`;
+  });
+  if(!any)s+=`<text x="${W/2}" y="${H/2}" fill="#a99fdc" font-size="13" text-anchor="middle">Dati parādīsies pēc pirmajiem raundiem ar jauno versiju</text>`;
+  svg.innerHTML=s;
+}
+
+function confusions(rounds){
+  const c={};
+  rounds.forEach(r=>(r.answers||[]).forEach(a=>{if(!a.ok){const k=a.f+'→'+a.v;c[k]=(c[k]||0)+1}}));
+  const top=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  if(!top.length){$('conf').innerHTML='<p class="empty">Vēl nav datu</p>';return}
+  const max=top[0][1];
+  $('conf').innerHTML=top.map(([k,n])=>{const[f,v]=k.split('→');const[a,b]=f.split('x');
+    return `<div><b>${a}×${b}</b><span style="display:flex;gap:8px;align-items:center"><span style="white-space:nowrap">atbild <b style="color:var(--red)">${esc(v)}</b> (pareizi ${a*b})</span><i style="width:${n/max*100}%"></i></span><span class="n">${n}×</span></div>`}).join('');
+}
+
 function userTable(users,rounds){
-  const st={};rounds.forEach(r=>{const s=st[r.uid]=st[r.uid]||{a:0,ok:0,last:null};s.a+=r.answered||0;s.ok+=r.right||0;if(!s.last||r.ts>s.last)s.last=r.ts});
-  const rows=users.map(u=>({...u,last:st[u.id]?.last||toDate(u.lastSeen),acc:st[u.id]?.a?Math.round(st[u.id].ok/st[u.id].a*100):null}))
+  const st={};rounds.forEach(r=>{const s=st[r.uid]=st[r.uid]||{a:0,ok:0,last:null,t:[]};s.a+=r.answered||0;s.ok+=r.right||0;if(!s.last||r.ts>s.last)s.last=r.ts;if(Date.now()-r.ts<7*DAY)(r.answers||[]).forEach(x=>{if(x.ok)s.t.push(x.t)})});
+  const rows=users.map(u=>({...u,last:st[u.id]?.last||toDate(u.lastSeen),acc:st[u.id]?.a?Math.round(st[u.id].ok/st[u.id].a*100):null,rt:st[u.id]?.t.length?(st[u.id].t.reduce((a,b)=>a+b,0)/st[u.id].t.length).toFixed(1)+' s':'—'}))
     .sort((a,b)=>(b.last||0)-(a.last||0));
-  if(!rows.length){$('users').innerHTML='<tr><td colspan="7"><p class="empty">Vēl neviens nav pieslēdzies.</p></td></tr>';return}
+  if(!rows.length){$('users').innerHTML='<tr><td colspan="10"><p class="empty">Vēl neviens nav pieslēdzies.</p></td></tr>';return}
   $('users').innerHTML=rows.map(u=>{
     const name=u.name||'Bez vārda',active=u.last&&Date.now()-u.last<7*DAY;
     return `<tr><td><div class="who">${u.photo?`<img src="${esc(u.photo)}" alt="" referrerpolicy="no-referrer">`:`<div class="av">${esc(name[0])}</div>`}${esc(name)}</div></td>
     <td class="n">${level(u.xp||0)}</td><td class="n">${u.rounds||0}</td><td class="n">${u.wins||0}</td>
-    <td class="n">${u.acc==null?'—':u.acc+'%'}</td><td class="n">${u.best||0}</td>
+    <td class="n">${u.acc==null?'—':u.acc+'%'}</td><td class="n">${u.mastered??'—'}</td><td class="n">${u.rt}</td><td class="n">${u.dayStreak||0}</td><td class="n">${u.coins||0}</td>
     <td><span class="pill ${active?'ok':'idle'}">${ago(u.last)}</span></td></tr>`}).join('');
 }
 
@@ -242,8 +331,8 @@ function recent(rounds,byId){
   if(!r.length){$('recent').innerHTML='<tr><td colspan="7"><p class="empty">Vēl nav izspēlētu raundu.</p></td></tr>';return}
   $('recent').innerHTML=r.map(x=>`<tr><td>${fmtTime(x.ts)}</td><td>${esc(byId[x.uid]?.name||'—')}</td>
     <td><span class="pill ${x.won?'ok':'no'}">${x.won?'Uzvara':'Zaudējums'}</span></td>
-    <td class="n">${x.right||0}/${x.answered||0}</td><td class="n">${x.score||0}</td><td class="n">${x.seconds||0} s</td>
-    <td>${esc((x.mistakes||[]).map(m=>m.replace('x','×')).join(', '))||'—'}</td></tr>`).join('');
+    <td class="n">${x.right||0}/${x.answered||0}</td><td class="n">${x.score||0}</td><td class="n">${x.avgTime!=null?x.avgTime+' s':'—'}</td>
+    <td>${x.answers?esc(x.answers.filter(a=>!a.ok).map(a=>a.f.replace('x','×')+' ('+a.v+')').join(', '))||'—':esc((x.mistakes||[]).map(m=>m.replace('x','×')).join(', '))||'—'}</td></tr>`).join('');
 }
 </script>
 </body>

@@ -135,6 +135,70 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
 .sheet{position:fixed;inset:0;background:rgba(8,4,24,.75);display:grid;place-items:center;z-index:40;padding:16px}
 .sheet .card{width:100%;max-width:380px;display:flex;flex-direction:column;gap:12px;text-align:center}
 .sync{font-size:12px;color:var(--muted);text-align:center;margin:0;min-height:16px}
+
+/* krabis ar aksesuāriem */
+.crabfig{position:relative;container-type:inline-size;aspect-ratio:640/483;width:100%;transform-origin:50% 90%}
+.crabfig img{width:100%;height:100%;display:block;object-fit:contain;filter:var(--cf,none) drop-shadow(0 5px 0 #0d0726)}
+.crabfig .acc{position:absolute;line-height:1;translate:-50% -50%;pointer-events:none;user-select:none}
+.crabfig .hat{left:50%;top:-2%;font-size:25cqw}
+.crabfig .glasses{left:50%;top:21%;font-size:29cqw}
+.crabfig .held{left:87%;top:4%;font-size:17cqw}
+.crabfig[data-color="zelts"]{--cf:sepia(1) saturate(3.2) hue-rotate(-12deg) brightness(1.08)}
+.crabfig[data-color="ledus"]{--cf:hue-rotate(185deg) saturate(1.2)}
+.crabfig[data-color="neons"]{--cf:hue-rotate(95deg) saturate(1.7)}
+.crabfig[data-color="varaviksne"] img{animation:rainbow 4s linear infinite}
+@keyframes rainbow{to{filter:hue-rotate(360deg) drop-shadow(0 5px 0 #0d0726)}}
+.chest.shake .crabfig{animation:crabDance 1.1s ease-in-out infinite}
+.chest.open .crabfig{animation:crabJump .7s cubic-bezier(.3,1.6,.5,1) 1,crabHappy 2.4s ease-in-out .7s infinite}
+.island{height:190px}
+.mascot{position:absolute;left:50%;bottom:22px;width:min(190px,48vw);translate:-50% 0;background:none;padding:0;cursor:pointer}
+.mascot .crabfig{animation:crabHappy 2.4s ease-in-out infinite}
+.mascot .bubble{position:absolute;right:-18px;top:-6px;background:#fff;color:#1f1147;font-size:11px;padding:4px 8px;border-radius:10px 10px 10px 2px;white-space:nowrap}
+
+/* misija un apgūšana */
+.mcard{display:flex;flex-direction:column;gap:8px}
+.mhead{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mhead h3{margin:0}
+.flame{font-family:var(--display);font-size:18px;color:#ffb020;white-space:nowrap}
+.flame.off{color:var(--muted);filter:grayscale(1)}
+.mtext{margin:0;font-size:15px}
+.pbar{height:14px;border-radius:99px;background:#0d0726;overflow:hidden;border:2px solid #0d0726}
+.pbar i{display:block;height:100%;width:0;border-radius:99px;background:linear-gradient(90deg,#ffb020,var(--yellow));transition:width .6s}
+.pbar.g i{background:linear-gradient(90deg,#1fbf6a,var(--green))}
+.pmeta{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.done{color:var(--green)}
+.navrow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.navbtn{height:54px;border-radius:16px;background:var(--panel2);font-family:var(--display);font-size:18px;box-shadow:0 5px 0 #0d0726}
+.navbtn:active{transform:translateY(3px);box-shadow:0 2px 0 #0d0726}
+
+/* karte */
+.back{align-self:flex-start;height:40px;padding:0 14px;border-radius:12px;background:#0d0726;font-size:14px}
+.stitle{font-family:var(--display);font-size:32px;margin:0;text-align:center;color:var(--yellow);text-shadow:0 3px 0 #b3440a,0 6px 0 #0d0726}
+.mgrid{display:grid;grid-template-columns:22px repeat(10,1fr);gap:3px;font-size:11px;font-variant-numeric:tabular-nums}
+.mgrid div{aspect-ratio:1;display:grid;place-items:center;border-radius:6px;font-family:var(--display);font-size:clamp(9px,2.6vw,13px)}
+.mgrid .h{color:var(--muted);background:none;font-family:var(--body)}
+.s0{background:#1a1048;color:#4a3d8a}.s1{background:var(--red);color:#3a0808}.s2{background:var(--yellow);color:#3b2400}.s3{background:var(--green);color:#063a1c}
+.legend2{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--muted);justify-content:center}
+.legend2 span{display:flex;align-items:center;gap:5px}.legend2 i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.tbars{display:grid;gap:6px}
+.tbar{display:grid;grid-template-columns:38px 1fr 44px;align-items:center;gap:8px;font-size:13px}
+.tbar b{font-family:var(--display);font-weight:400}
+
+/* veikals */
+.shopcrab{width:min(230px,60vw);margin:0 auto}
+.shopsec h3{margin:6px 0 8px;font-family:var(--display);font-weight:400;font-size:18px}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.item{border-radius:16px;background:#0d0726;padding:8px 6px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;border:3px solid transparent}
+.item .e{font-size:34px;line-height:1.2}
+.item .nm{font-size:12px;color:var(--ink)}
+.item .pr{font-size:12px;color:var(--yellow);font-family:var(--display)}
+.item.own .pr{color:var(--cyan)}
+.item.on{border-color:var(--green)}
+.item.on .pr{color:var(--green)}
+.item.poor{opacity:.5}
+.swatch{width:34px;height:34px;border-radius:50%;margin:4px 0}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));translate:-50% 0;background:#fff;color:#1f1147;padding:10px 16px;border-radius:14px;font-size:14px;z-index:60;box-shadow:0 5px 0 #0d0726;max-width:calc(100% - 32px);text-align:center}
+.bonus{margin:0;text-align:center;font-size:15px;color:var(--yellow)}
 #confetti{position:fixed;inset:0;pointer-events:none;z-index:50;width:100%;height:100%}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -165,9 +229,29 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
   <!-- MENU -->
   <section class="screen" id="menu">
     <h1 class="title">REIZRĒĶINA<br><span>SALA</span></h1>
-    <p class="sub">Atbildi pareizi, noturies zonā, kļūsti #1!</p>
-    <div class="island"><canvas id="island"></canvas></div>
+    <div class="island"><canvas id="island"></canvas>
+      <button class="mascot" id="mascot" aria-label="Atvērt krabja veikalu"><div class="crabfig" data-crab></div><span class="bubble">Uzposies mani!</span></button>
+    </div>
     <button class="play" id="play">SPĒLĒT<small>Izvēlies pareizo · 12 piemēri</small></button>
+
+    <div class="card mcard">
+      <div class="mhead"><h3>Dienas misija</h3><span class="flame" id="flame">🔥 0</span></div>
+      <p class="mtext" id="mText">…</p>
+      <div class="pbar"><i id="mBar"></i></div>
+      <div class="pmeta"><span id="mProg">0 / 0</span><span id="mReward">Balva: 75 🪙</span></div>
+    </div>
+
+    <div class="card mcard">
+      <div class="mhead"><h3>Apgūti piemēri</h3><span class="flame" style="color:var(--green)" id="mastNum">0 / 100</span></div>
+      <div class="pbar g"><i id="mastBar"></i></div>
+      <div class="pmeta"><span id="mastSub">Apgūts = 3× pēc kārtas pareizi, ātrāk par 3 s</span></div>
+    </div>
+
+    <div class="navrow">
+      <button class="navbtn" id="toShop">🦀 Veikals</button>
+      <button class="navbtn" id="toMap">🗺️ Mana karte</button>
+    </div>
+
     <div class="card">
       <h3>Kuras reizrēķina rindas?</h3>
       <div class="chips" id="chips"></div>
@@ -184,7 +268,7 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
     <button class="login" id="loginBig"><svg viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.7 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.4-.4-3.5z"/><path fill="#FF3D00" d="m6.3 14.7 6.6 4.8C14.7 15.1 19 12 24 12c3.1 0 5.8 1.2 7.9 3.1l5.7-5.7C34 6.1 29.3 4 24 4 16.3 4 9.7 8.3 6.3 14.7z"/><path fill="#4CAF50" d="M24 44c5.2 0 9.9-2 13.4-5.2l-6.2-5.2C29.2 35.1 26.7 36 24 36c-5.2 0-9.6-3.3-11.3-8l-6.5 5C9.5 39.6 16.2 44 24 44z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.2-2.2 4.2-4.1 5.6l6.2 5.2C37 39.2 44 34 44 24c0-1.3-.1-2.4-.4-3.5z"/></svg>Pieslēgties ar Google</button>
     <p class="note" id="loginNote">Pieslēdzies, lai progress saglabājas visās ierīcēs. Glabājam tikai vārdu un spēles rezultātus.</p>
     <p class="sync" id="sync"></p>
-    <p class="soon">Drīzumā: Ātrā šaušana · Bosa cīņa · Žetoni · Statistika</p>
+    <p class="soon">Drīzumā: Ātrā šaušana · Bosa cīņa · Žetoni</p>
   </section>
 
   <!-- GAME -->
@@ -211,10 +295,11 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
     <h2 class="win" id="winTitle">#1 UZVARA!</h2>
     <p class="sub" id="winSub">Tu izdzīvoji līdz galam</p>
     <button class="chest" id="chest" aria-label="Saņemt balvu no krabja">
-      <div class="glow"></div><img class="crab" src="krabis2.webp" alt="Skaitļu krabis">
+      <div class="glow"></div><div class="crabfig" data-crab></div>
     </button>
     <p class="rarity" id="rarity"></p>
     <p class="tap" id="tap">Pieskaries krabim, lai saņemtu balvu!</p>
+    <p class="bonus" id="bonus" hidden></p>
     <div class="rgrid stats" style="grid-template-columns:repeat(2,1fr)">
       <div class="stat"><b id="rScore">0</b><span>Punkti</span></div>
       <div class="stat"><b id="rAcc">0%</b><span>Precizitāte</span></div>
@@ -225,6 +310,28 @@ body{margin:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-a
       <button class="btn2" id="toMenu">Uz salu</button>
       <button class="btn2 main" id="again">Vēlreiz!</button>
     </div>
+  </section>
+
+  <!-- MAP -->
+  <section class="screen" id="map" hidden>
+    <button class="back" data-back>← Uz salu</button>
+    <h2 class="stitle">Mana karte</h2>
+    <p class="sub" id="mapSub">Apgūti 0 no 100</p>
+    <div class="card"><div class="mgrid" id="mgrid"></div></div>
+    <div class="legend2">
+      <span><i class="s3"></i>Apgūts</span><span><i class="s2"></i>Zina, bet lēni</span><span><i class="s1"></i>Kļūdās</span><span><i class="s0"></i>Vēl nav bijis</span>
+    </div>
+    <div class="card"><h3>Pa rindām</h3><div class="tbars" id="tbars"></div></div>
+    <button class="play" id="trainWeak">TRENĒT VĀJĀKOS<small id="weakSub">…</small></button>
+  </section>
+
+  <!-- SHOP -->
+  <section class="screen" id="shop" hidden>
+    <button class="back" data-back>← Uz salu</button>
+    <h2 class="stitle">Krabja veikals</h2>
+    <div class="shopcrab"><div class="crabfig" data-crab></div></div>
+    <p class="sub">Pieskaries mantai, lai nopirktu vai uzvilktu. Vēlreiz pieskaroties, novilksi.</p>
+    <div id="shopList"></div>
   </section>
 </div>
 
@@ -242,14 +349,132 @@ let ME=null; // pieslēgtais lietotājs
 {
 const $=id=>document.getElementById(id);
 const KEY='reizsala_v1';
-const defaults={xp:0,coins:0,wins:0,best:0,bestStreak:0,rounds:0,tables:[2,3,4,5,6,7,8,9,10],sound:true,facts:{}};
+const defaults={xp:0,coins:0,earnedTotal:0,spentTotal:0,wins:0,best:0,bestStreak:0,rounds:0,
+  tables:[2,3,4,5,6,7,8,9,10],sound:true,facts:{},
+  owned:[],equip:{hat:null,glasses:null,held:null,color:null},
+  dayStreak:0,bestDayStreak:0,lastDay:'',mission:null,masteryLog:{},uid:null};
+const clone=o=>JSON.parse(JSON.stringify(o));
 let S;
-try{S=Object.assign({},defaults,JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S={...defaults}}
+try{S=Object.assign(clone(defaults),JSON.parse(localStorage.getItem(KEY)||'{}'))}catch(e){S=clone(defaults)}
+migrate();
+function migrate(){
+  if(!S.earnedTotal&&S.coins){S.earnedTotal=S.coins;S.spentTotal=0}
+  S.equip=Object.assign({hat:null,glasses:null,held:null,color:null},S.equip||{});
+  S.owned=S.owned||[];S.masteryLog=S.masteryLog||{};
+  recalcCoins();
+}
+function recalcCoins(){S.coins=Math.max(0,(S.earnedTotal||0)-(S.spentTotal||0))}
+function addCoins(n){S.earnedTotal=(S.earnedTotal||0)+n;recalcCoins()}
+
+/* ---------- dienas ---------- */
+function dayStr(d=new Date()){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function yesterday(){const d=new Date();d.setDate(d.getDate()-1);return dayStr(d)}
+
+/* ---------- apgūšana ---------- */
+// fakta statuss: 0 nav bijis, 1 kļūdās, 2 zina bet lēni, 3 apgūts
+function status(f){
+  if(!f||!f.h||!f.h.length){return (f&&(f.r||f.w))?(f.r?2:1):0}
+  const h=f.h.slice(-3),t=(f.t||[]).slice(-3);
+  if(h.length===3&&h.every(x=>x===1)&&t.length===3&&t.every(x=>x<3))return 3;
+  if(h[h.length-1]===0)return 1;
+  return 2;
+}
+function factStatus(a,b){return status(S.facts[a+'x'+b])}
+function masteredCount(){let n=0;for(let a=1;a<=10;a++)for(let b=1;b<=10;b++)if(factStatus(a,b)===3)n++;return n}
+function tableMastery(t){let n=0;for(let b=1;b<=10;b++)if(factStatus(t,b)===3)n++;return n}
+function logMastery(){S.masteryLog[dayStr()]=masteredCount();
+  const keys=Object.keys(S.masteryLog).sort();while(keys.length>90)delete S.masteryLog[keys.shift()]}
+
+/* ---------- dienas misija ---------- */
+const MISSION_REWARD=75;
+function weakestTable(){
+  let best=7,bm=99;for(let t=2;t<=10;t++){const m=tableMastery(t);if(m<bm){bm=m;best=t}}return best;
+}
+function ensureMission(){
+  const today=dayStr();
+  if(S.mission&&S.mission.day===today)return S.mission;
+  const h=[...today].reduce((a,c)=>a*31+c.charCodeAt(0)|0,7);
+  const kind=['table','fast','wins','table','perfect'][Math.abs(h)%5];
+  const T=weakestTable();
+  const m={day:today,kind,progress:0,done:false};
+  if(kind==='table'){m.table=T;m.target=15;m.text=`Atrisini pareizi 15 piemērus ar ×${T}`}
+  if(kind==='fast'){m.target=12;m.text='Atbildi pareizi 12 reizes ātrāk par 2 sekundēm ⚡'}
+  if(kind==='wins'){m.target=2;m.text='Uzvari 2 raundos'}
+  if(kind==='perfect'){m.target=1;m.text='Nospēlē raundu bez nevienas kļūdas'}
+  S.mission=m;return m;
+}
+function missionTick(ev){
+  const m=ensureMission();if(m.done)return false;
+  if(m.kind==='table'&&ev.type==='ok'&&(ev.a===m.table||ev.b===m.table))m.progress++;
+  if(m.kind==='fast'&&ev.type==='ok'&&ev.dt<2)m.progress++;
+  if(m.kind==='wins'&&ev.type==='round'&&ev.won)m.progress++;
+  if(m.kind==='perfect'&&ev.type==='round'&&ev.won&&ev.acc===100)m.progress++;
+  if(m.progress>=m.target){m.progress=m.target;m.done=true;addCoins(MISSION_REWARD);return true}
+  return false;
+}
+
+/* ---------- veikals ---------- */
+const SHOP=[
+  {sec:'Cepures',slot:'hat',items:[
+    {id:'cap',e:'🧢',n:'Beisbolka',p:40},{id:'party',e:'🎉',n:'Ballītes',p:60},{id:'tophat',e:'🎩',n:'Cilindrs',p:80},
+    {id:'cowboy',e:'🤠',n:'Kovbojs',p:100},{id:'grad',e:'🎓',n:'Gudrinieks',p:120},{id:'crown',e:'👑',n:'Karalis',p:200}]},
+  {sec:'Brilles',slot:'glasses',items:[
+    {id:'specs',e:'👓',n:'Brilles',p:40},{id:'sun',e:'🕶️',n:'Saulesbrilles',p:70},{id:'goggles',e:'🥽',n:'Niršanas',p:90}]},
+  {sec:'Spīlēs',slot:'held',items:[
+    {id:'ice',e:'🍦',n:'Saldējums',p:30},{id:'ball',e:'⚽',n:'Bumba',p:40},{id:'balloon',e:'🎈',n:'Balons',p:50},
+    {id:'rocket',e:'🚀',n:'Raķete',p:120},{id:'trophy',e:'🏆',n:'Kauss',p:300}]},
+  {sec:'Krāsas',slot:'color',items:[
+    {id:'ledus',c:'linear-gradient(135deg,#6ee7ff,#3a7bff)',n:'Ledus',p:150},{id:'neons',c:'linear-gradient(135deg,#7dff4a,#00d0a0)',n:'Neons',p:200},
+    {id:'zelts',c:'linear-gradient(135deg,#fff3b0,#ffb020)',n:'Zelts',p:250},{id:'varaviksne',c:'conic-gradient(red,orange,yellow,lime,cyan,blue,violet,red)',n:'Varavīksne',p:500}]}
+];
+const ITEM={};SHOP.forEach(s=>s.items.forEach(i=>{i.slot=s.slot;ITEM[i.id]=i}));
+function renderCrabs(){
+  document.querySelectorAll('[data-crab]').forEach(el=>{
+    const e=S.equip;
+    el.dataset.color=e.color||'';
+    el.innerHTML='<img src="krabis2.webp" alt="Skaitļu krabis">'+
+      (e.hat&&ITEM[e.hat]?`<span class="acc hat">${ITEM[e.hat].e}</span>`:'')+
+      (e.glasses&&ITEM[e.glasses]?`<span class="acc glasses">${ITEM[e.glasses].e}</span>`:'')+
+      (e.held&&ITEM[e.held]?`<span class="acc held">${ITEM[e.held].e}</span>`:'');
+  });
+}
+function renderShop(){
+  const box=$('shopList');box.innerHTML='';
+  SHOP.forEach(sec=>{
+    const wrap=document.createElement('div');wrap.className='card shopsec';
+    wrap.innerHTML=`<h3>${sec.sec}</h3>`;
+    const grid=document.createElement('div');grid.className='items';
+    sec.items.forEach(it=>{
+      const own=S.owned.includes(it.id),on=S.equip[sec.slot]===it.id;
+      const b=document.createElement('button');
+      b.className='item'+(own?' own':'')+(on?' on':'')+(!own&&S.coins<it.p?' poor':'');
+      b.innerHTML=(it.e?`<span class="e">${it.e}</span>`:`<span class="swatch" style="background:${it.c}"></span>`)+
+        `<span class="nm">${it.n}</span><span class="pr">${on?'Uzvilkts ✓':own?'Uzvilkt':it.p+' 🪙'}</span>`;
+      b.onclick=()=>shopTap(it);
+      grid.appendChild(b);
+    });
+    wrap.appendChild(grid);box.appendChild(wrap);
+  });
+}
+function shopTap(it){
+  if(S.owned.includes(it.id)){
+    S.equip[it.slot]=S.equip[it.slot]===it.id?null:it.id;sfx.ok(2);
+  }else{
+    if(S.coins<it.p){toast(`Vajag vēl ${it.p-S.coins} monētas. Spēlē un krāj!`);sfx.bad();return}
+    S.spentTotal=(S.spentTotal||0)+it.p;recalcCoins();
+    S.owned.push(it.id);S.equip[it.slot]=it.id;sfx.chest();toast(`Nopirkts: ${it.n}!`);
+  }
+  save();renderShop();renderCrabs();hud();
+}
+let toastT=0;
+function toast(msg){let t=document.querySelector('.toast');if(!t){t=document.createElement('div');t.className='toast';document.body.appendChild(t)}
+  t.textContent=msg;t.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>t.hidden=true,2400)}
 
 /* ---------- saglabāšana: lokāli + mākonī ---------- */
 let cloudTimer=0;
-const CLOUD_FIELDS=['xp','coins','wins','best','bestStreak','rounds','tables','facts'];
-function cloudPayload(){const o={};CLOUD_FIELDS.forEach(k=>o[k]=S[k]);o.lastSeen=serverTimestamp();return o}
+const CLOUD_FIELDS=['xp','coins','earnedTotal','spentTotal','wins','best','bestStreak','rounds','tables','facts',
+  'owned','equip','dayStreak','bestDayStreak','lastDay','mission','masteryLog'];
+function cloudPayload(){const o={};CLOUD_FIELDS.forEach(k=>o[k]=S[k]??null);o.mastered=masteredCount();o.lastSeen=serverTimestamp();return o}
 async function pushCloud(){
   if(!ME)return;
   try{await setDoc(doc(fs,'sala_users',ME.uid),cloudPayload(),{merge:true});$('sync').textContent='Saglabāts mākonī ✓'}
@@ -261,7 +486,7 @@ const save=()=>{
 };
 function mergeFacts(a={},b={}){
   const out={...a};
-  for(const k in b){const x=out[k]||{r:0,w:0},y=b[k];out[k]={r:Math.max(x.r,y.r||0),w:Math.max(x.w,y.w||0)}}
+  for(const k in b){const x=out[k],y=b[k];if(!x||((y.r||0)+(y.w||0))>((x.r||0)+(x.w||0)))out[k]=y}
   return out;
 }
 async function onLogin(user){
@@ -276,18 +501,26 @@ async function onLogin(user){
     const ref=doc(fs,'sala_users',user.uid);const snap=await getDoc(ref);
     if(snap.exists()){
       const c=snap.data();
-      // apvieno: ņem lielāko, lai nekas nepazūd
-      ['xp','coins','wins','best','bestStreak','rounds'].forEach(k=>S[k]=Math.max(S[k]||0,c[k]||0));
-      if(Array.isArray(c.tables)&&c.tables.length)S.tables=c.tables;
+      if(!c.earnedTotal&&c.coins){c.earnedTotal=c.coins;c.spentTotal=0}
+      const same=S.uid===user.uid;
+      ['xp','wins','best','bestStreak','rounds','earnedTotal','spentTotal','bestDayStreak'].forEach(k=>S[k]=Math.max(S[k]||0,c[k]||0));
+      if(Array.isArray(c.tables)&&c.tables.length&&!same)S.tables=c.tables;
       S.facts=mergeFacts(S.facts,c.facts);
+      S.owned=[...new Set([...(S.owned||[]),...(c.owned||[])])];
+      if(!same&&c.equip)S.equip=Object.assign(S.equip,c.equip);
+      if((c.lastDay||'')>(S.lastDay||'')){S.lastDay=c.lastDay;S.dayStreak=c.dayStreak||0}
+      if(c.mission&&(!S.mission||c.mission.day>S.mission.day||(c.mission.day===S.mission.day&&c.mission.progress>S.mission.progress)))S.mission=c.mission;
+      for(const d in (c.masteryLog||{}))S.masteryLog[d]=Math.max(S.masteryLog[d]||0,c.masteryLog[d]);
+      S.uid=user.uid;recalcCoins();
       await setDoc(ref,{...cloudPayload(),name:user.displayName||'',photo:user.photoURL||''},{merge:true});
     }else{
+      S.uid=user.uid;
       await setDoc(ref,{...cloudPayload(),name:user.displayName||'',photo:user.photoURL||'',createdAt:serverTimestamp()});
     }
     $('sync').textContent='Progress sinhronizēts ✓';
   }catch(e){$('sync').textContent='Mākonis nav pieejams, spēlē lokāli'}
   try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  chips();hud();
+  refreshAll();
 }
 function onLogout(){
   ME=null;
@@ -307,8 +540,8 @@ $('loginBig').onclick=login;
 $('acct').onclick=()=>{ME?($('acctSheet').hidden=false):login()};
 $('closeSheet').onclick=()=>$('acctSheet').hidden=true;
 $('logout').onclick=async()=>{await pushCloud();await signOut(auth);
-  S={...defaults,sound:S.sound};try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
-  $('acctSheet').hidden=true;chips();hud()};
+  S={...clone(defaults),sound:S.sound};try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}
+  $('acctSheet').hidden=true;refreshAll()};
 async function logRound(r){
   if(!ME)return;
   try{await addDoc(collection(fs,'sala_users',ME.uid,'sala_rounds'),{...r,ts:serverTimestamp()})}catch(e){}
@@ -335,7 +568,7 @@ const sfx={
 $('snd').onclick=()=>{S.sound=!S.sound;save();$('snd').textContent=S.sound?'🔊':'🔇'};
 $('snd').textContent=S.sound?'🔊':'🔇';
 
-/* ---------- level / hud ---------- */
+/* ---------- level / hud / izvēlne ---------- */
 const need=l=>100+(l-1)*50;
 function levelInfo(xp){let l=1;while(xp>=need(l)){xp-=need(l);l++}return{l,cur:xp,need:need(l)}}
 function hud(){
@@ -345,11 +578,38 @@ function hud(){
   $('coins').textContent=S.coins;
   $('sWins').textContent=S.wins;$('sBest').textContent=S.best;$('sStreak').textContent=S.bestStreak;
 }
+function menuCards(){
+  const m=ensureMission();
+  const alive=S.lastDay===dayStr()||S.lastDay===yesterday();
+  const ds=alive?S.dayStreak:0;
+  $('flame').textContent=`🔥 ${ds} ${ds===1?'diena':'dienas'}`;$('flame').classList.toggle('off',!ds);
+  $('mText').innerHTML=m.done?`<span class="done">✓ Izpildīts!</span> ${m.text}`:m.text;
+  $('mBar').style.width=(m.progress/m.target*100)+'%';
+  $('mProg').textContent=`${m.progress} / ${m.target}`;
+  $('mReward').textContent=m.done?`Saņemts ${MISSION_REWARD} 🪙`:`Balva: ${MISSION_REWARD} 🪙`;
+  const mc=masteredCount();
+  $('mastNum').textContent=`${mc} / 100`;$('mastBar').style.width=mc+'%';
+}
+function refreshAll(){chips();hud();menuCards();renderCrabs();if(!$('shop').hidden)renderShop();if(!$('map').hidden)renderMap()}
+
+/* ---------- karte ---------- */
+function renderMap(){
+  const g=$('mgrid');let h='<div class="h"></div>';
+  for(let b=1;b<=10;b++)h+=`<div class="h">×${b}</div>`;
+  for(let a=1;a<=10;a++){h+=`<div class="h">${a}</div>`;for(let b=1;b<=10;b++)h+=`<div class="s${factStatus(a,b)}" title="${a}×${b}=${a*b}">${a*b}</div>`}
+  g.innerHTML=h;
+  $('mapSub').textContent=`Apgūti ${masteredCount()} no 100`;
+  let tb='';for(let t=1;t<=10;t++){const n=tableMastery(t);tb+=`<div class="tbar"><b>×${t}</b><div class="pbar g"><i style="width:${n*10}%"></i></div><span>${n}/10</span></div>`}
+  $('tbars').innerHTML=tb;
+  const weak=weakTables();$('weakSub').textContent='Rindas '+weak.map(t=>'×'+t).join(', ');
+}
+function weakTables(){return [2,3,4,5,6,7,8,9,10].map(t=>[t,tableMastery(t)]).sort((x,y)=>x[1]-y[1]).slice(0,3).map(x=>x[0]).sort((a,b)=>a-b)}
+$('trainWeak').onclick=()=>{S.tables=weakTables();save();chips();start()};
 
 /* ---------- table chips ---------- */
 function chips(){
   const c=$('chips');c.innerHTML='';
-  for(let n=2;n<=10;n++){
+  for(let n=1;n<=10;n++){
     const b=document.createElement('button');b.className='chip';b.textContent='×'+n;
     b.setAttribute('aria-pressed',S.tables.includes(n));
     b.onclick=()=>{
@@ -359,10 +619,6 @@ function chips(){
     };
     c.appendChild(b);
   }
-  const b1=document.createElement('button');b1.className='chip';b1.textContent='×1';
-  b1.setAttribute('aria-pressed',S.tables.includes(1));
-  b1.onclick=()=>{S.tables.includes(1)?(S.tables.length>1&&(S.tables=S.tables.filter(x=>x!==1))):S.tables.push(1);save();chips()};
-  c.prepend(b1);
 }
 $('all').onclick=()=>{S.tables=[2,3,4,5,6,7,8,9,10];save();chips()};
 $('hard').onclick=()=>{S.tables=[6,7,8,9];save();chips()};
@@ -377,27 +633,16 @@ function island(){
   const W=r.width,H=r.height;let t=0;
   (function draw(){
     x.clearRect(0,0,W,H);
-    // storm ring
-    const cx=W/2,cy=H*.62,rad=Math.min(W*.42,190)+Math.sin(t/30)*4;
-    x.save();x.beginPath();x.ellipse(cx,cy,rad,rad*.38,0,0,Math.PI*2);
+    const cx=W/2,cy=H*.8,rad=Math.min(W*.44,210)+Math.sin(t/30)*4;
+    x.save();x.beginPath();x.ellipse(cx,cy,rad,rad*.3,0,0,Math.PI*2);
     x.strokeStyle='rgba(255,79,163,.7)';x.lineWidth=4;x.setLineDash([10,8]);x.lineDashOffset=-t;x.stroke();x.restore();
-    // water shimmer
-    x.fillStyle='rgba(45,226,255,.18)';x.beginPath();x.ellipse(cx,cy+8,rad*.8,rad*.26,0,0,Math.PI*2);x.fill();
-    // island
-    x.fillStyle='#ffd23f';x.beginPath();x.ellipse(cx,cy,rad*.55,rad*.16,0,0,Math.PI*2);x.fill();
-    x.fillStyle='#3dff8a';x.beginPath();x.ellipse(cx,cy-6,rad*.42,rad*.12,0,0,Math.PI*2);x.fill();
-    // palm
-    const px=cx+rad*.18,py=cy-8;
-    x.strokeStyle='#b3440a';x.lineWidth=6;x.setLineDash([]);x.beginPath();x.moveTo(px,py);x.quadraticCurveTo(px+8,py-30,px+2,py-56);x.stroke();
-    x.fillStyle='#3dff8a';
-    for(let i=0;i<5;i++){const a=-Math.PI/2+(i-2)*.7+Math.sin(t/40)*.05;x.save();x.translate(px+2,py-56);x.rotate(a);x.beginPath();x.ellipse(18,0,20,6,0,0,Math.PI*2);x.fill();x.restore()}
-    // chest on island
-    x.fillStyle='#ff4fa3';x.fillRect(cx-rad*.28,cy-24,26,18);x.fillStyle='#ffd23f';x.fillRect(cx-rad*.28+10,cy-20,6,8);
-    // floating numbers
+    x.fillStyle='rgba(45,226,255,.18)';x.beginPath();x.ellipse(cx,cy+6,rad*.8,rad*.2,0,0,Math.PI*2);x.fill();
+    x.fillStyle='#ffd23f';x.beginPath();x.ellipse(cx,cy,rad*.55,rad*.13,0,0,Math.PI*2);x.fill();
+    x.fillStyle='#3dff8a';x.beginPath();x.ellipse(cx,cy-5,rad*.42,rad*.09,0,0,Math.PI*2);x.fill();
     x.font='22px "Lilita One", sans-serif';x.textAlign='center';
     ['7×8','6×9','×','12','56'].forEach((s,i)=>{
       const a=t/120+i*1.25;x.fillStyle=['#2de2ff','#ffd23f','#ff4fa3','#3dff8a','#f4f0ff'][i];
-      x.globalAlpha=.85;x.fillText(s,cx+Math.cos(a)*rad*.95,cy-40+Math.sin(a*1.3)*22);x.globalAlpha=1;
+      x.globalAlpha=.85;x.fillText(s,cx+Math.cos(a)*rad*.95,cy-70+Math.sin(a*1.3)*40);x.globalAlpha=1;
     });
     t++;
     if(!matchMedia('(prefers-reduced-motion:reduce)').matches&&!$('menu').hidden)islandRaf=requestAnimationFrame(draw);
@@ -406,10 +651,12 @@ function island(){
 
 /* ---------- questions ---------- */
 function pickFact(){
-  // prefer facts with more mistakes
+  // vairāk tos, kas nav apgūti; apgūtos laiku pa laikam atkārto
+  const W={0:5,1:8,2:5,3:1};
   const pool=[];
-  S.tables.forEach(a=>{for(let b=1;b<=10;b++){const k=a+'x'+b,f=S.facts[k]||{r:0,w:0};const wgt=1+f.w*3-Math.min(f.r,4)*.15;for(let i=0;i<Math.max(1,Math.round(wgt*2));i++)pool.push([a,b])}});
+  S.tables.forEach(a=>{for(let b=1;b<=10;b++){const w=W[factStatus(a,b)];for(let i=0;i<w;i++)pool.push([a,b])}});
   let [a,b]=pool[Math.floor(Math.random()*pool.length)];
+  if(G&&G.last===a+'x'+b)[a,b]=pool[Math.floor(Math.random()*pool.length)];
   if(Math.random()<.5)[a,b]=[b,a];
   return[a,b];
 }
@@ -422,20 +669,34 @@ function options(a,b){
   while(set.size<4){const v=c+Math.floor(Math.random()*20)-10;if(v>0)set.add(v)}
   return[...set].sort(()=>Math.random()-.5);
 }
+function record(a,b,ok,dt){
+  [a+'x'+b,b+'x'+a].forEach(k=>{
+    const f=S.facts[k]=S.facts[k]||{r:0,w:0};
+    ok?f.r++:f.w++;
+    f.h=(f.h||[]).concat(ok?1:0).slice(-5);
+    f.t=(f.t||[]).concat(Math.round(Math.min(dt,20)*10)/10).slice(-5);
+    f.last=Date.now();
+  });
+}
 
 /* ---------- game ---------- */
 const TOTAL=12,SHIELDS=3;
 let G=null;
-function show(id){['menu','game','result'].forEach(s=>$(s).hidden=s!==id);if(id==='menu')island()}
+function show(id){['menu','game','result','map','shop'].forEach(s=>$(s).hidden=s!==id);scrollTo(0,0);
+  if(id==='menu'){island();menuCards();renderCrabs()}
+  if(id==='map')renderMap();
+  if(id==='shop'){renderShop();renderCrabs()}
+}
 function start(){
-  G={i:0,score:0,shields:SHIELDS,streak:0,maxStreak:0,right:0,lock:false,earned:0,start:Date.now(),mistakes:[]};
+  G={i:0,score:0,shields:SHIELDS,streak:0,maxStreak:0,right:0,lock:false,earned:0,start:Date.now(),mistakes:[],answers:[],
+     masteredBefore:masteredCount(),missionDone:false};
   $('shields').innerHTML='';
   for(let i=0;i<SHIELDS;i++){const s=document.createElement('div');s.className='shield';$('shields').appendChild(s)}
   show('game');next();
 }
 function next(){
   if(G.i>=TOTAL||G.shields<=0)return finish();
-  const[a,b]=pickFact();G.a=a;G.b=b;G.t0=performance.now();G.lock=false;
+  const[a,b]=pickFact();G.a=a;G.b=b;G.last=Math.min(a,b)+'x'+Math.max(a,b);G.t0=performance.now();G.lock=false;
   const q=$('q');q.textContent=`${a} × ${b}`;q.classList.remove('pop');void q.offsetWidth;q.classList.add('pop');
   $('prog').textContent=`${G.i+1} / ${TOTAL}`;
   $('zone').style.width=(100-G.i/TOTAL*70)+'%';
@@ -450,21 +711,23 @@ function next(){
 function mult(){return G.streak>=10?3:G.streak>=5?2:1}
 function answer(btn,v){
   if(G.lock)return;G.lock=true;
-  const c=G.a*G.b,k=Math.min(G.a,G.b)+'x'+Math.max(G.a,G.b),k1=G.a+'x'+G.b,k2=G.b+'x'+G.a;
-  [k1,k2].forEach(kk=>{S.facts[kk]=S.facts[kk]||{r:0,w:0}});
+  const c=G.a*G.b;
   const dt=(performance.now()-G.t0)/1000;
-  if(v===c){
+  const ok=v===c;
+  record(G.a,G.b,ok,dt);
+  G.answers.push({f:`${G.a}x${G.b}`,v,ok,t:Math.round(dt*10)/10});
+  if(ok){
     G.streak++;G.right++;G.maxStreak=Math.max(G.maxStreak,G.streak);
     const speed=dt<2?5:dt<4?3:0;const pts=(10+speed)*mult();G.score+=pts;
-    const c1=mult();G.earned+=c1;S.coins+=c1;hud();
+    const c1=mult();G.earned+=c1;addCoins(c1);
+    if(missionTick({type:'ok',a:G.a,b:G.b,dt}))G.missionDone=true;
+    hud();
     btn.classList.add('ok');sfx.ok(Math.min(G.streak,10));
-    [k1,k2].forEach(kk=>S.facts[kk].r++);
     const f=document.createElement('div');f.className='float';f.textContent='+'+pts+(speed?' ⚡':'');$('qbox').appendChild(f);setTimeout(()=>f.remove(),900);
     setTimeout(()=>{G.i++;next()},550);
   }else{
     G.streak=0;G.shields--;
     btn.classList.add('bad');sfx.bad();
-    [k1,k2].forEach(kk=>S.facts[kk].w++);
     G.mistakes.push(`${G.a}x${G.b}`);
     [...$('answers').children].forEach(b=>{if(+b.dataset.v===c)b.classList.add('show')});
     const sh=$('shields').children[G.shields];if(sh)sh.classList.add('lost');
@@ -489,19 +752,38 @@ function finish(){
   G.rar=RAR[rar];G.opened=false;
   const xp=G.right*5+(won?30:0);
   const before=levelInfo(S.xp).l;
-  S.coins+=G.rar.coins;G.earned+=G.rar.coins;
+  addCoins(G.rar.coins);G.earned+=G.rar.coins;
+  // dienu sērija
+  const today=dayStr();let streakBonus=0;
+  if(S.lastDay!==today){
+    S.dayStreak=S.lastDay===yesterday()?(S.dayStreak||0)+1:1;
+    S.lastDay=today;S.bestDayStreak=Math.max(S.bestDayStreak||0,S.dayStreak);
+    streakBonus=10*Math.min(S.dayStreak,7);addCoins(streakBonus);G.earned+=streakBonus;
+  }
+  if(missionTick({type:'round',won,acc}))G.missionDone=true;
+  if(G.missionDone)G.earned+=MISSION_REWARD;
+  logMastery();
+  const mastered=masteredCount(),newlyMastered=mastered-G.masteredBefore;
   S.xp+=xp;S.rounds=(S.rounds||0)+1;if(won)S.wins++;S.best=Math.max(S.best,G.score);S.bestStreak=Math.max(S.bestStreak,G.maxStreak);save();
+  const times=G.answers.filter(x=>x.ok).map(x=>x.t);
   logRound({mode:'izvelies',score:G.score,right:G.right,answered:G.i,won,acc,maxStreak:G.maxStreak,
-    seconds:Math.round((Date.now()-G.start)/1000),mistakes:G.mistakes,tables:S.tables});
+    seconds:Math.round((Date.now()-G.start)/1000),mistakes:G.mistakes,tables:S.tables,
+    answers:G.answers,avgTime:times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length*10)/10:null,
+    mastered,newlyMastered,hour:new Date().getHours(),dayStreak:S.dayStreak});
   G.levelUp=levelInfo(S.xp).l>before;
   $('winTitle').textContent=won?'#1 UZVARA!':'ZONA TEVI NOĶĒRA';
   $('winTitle').classList.toggle('lose',!won);
   $('winSub').textContent=won?(acc===100?'Nevainojams raunds!':'Tu izdzīvoji līdz galam'):'Nekas, nākamreiz noteikti! Krabim tev tik un tā ir balva.';
   $('rScore').textContent=G.score;$('rAcc').textContent=acc+'%';$('rXp').textContent='+'+xp;$('rCoins').textContent='+'+G.earned;
+  const lines=[];
+  if(streakBonus)lines.push(`🔥 ${S.dayStreak}. diena pēc kārtas! +${streakBonus} 🪙`);
+  if(G.missionDone)lines.push(`✅ Dienas misija izpildīta! +${MISSION_REWARD} 🪙`);
+  if(newlyMastered>0)lines.push(`🌟 Jauni apgūti piemēri: +${newlyMastered} (kopā ${mastered}/100)`);
+  $('bonus').innerHTML=lines.join('<br>');$('bonus').hidden=!lines.length;
   const ch=$('chest');ch.className='chest shake';ch.style.setProperty('--rar',G.rar.c);
   $('rarity').textContent='';$('tap').textContent='Pieskaries krabim, lai saņemtu balvu!';
-  show('result');hud();
-  if(won){sfx.win();confetti()}
+  show('result');renderCrabs();hud();
+  if(won||G.missionDone){sfx.win();confetti()}
 }
 $('chest').onclick=()=>{
   if(!G||G.opened)return;G.opened=true;
@@ -515,6 +797,9 @@ $('chest').onclick=()=>{
 $('play').onclick=start;$('again').onclick=start;
 $('toMenu').onclick=()=>{show('menu');hud()};
 $('quit').onclick=()=>{show('menu');hud()};
+$('toShop').onclick=()=>show('shop');$('mascot').onclick=()=>show('shop');
+$('toMap').onclick=()=>show('map');
+document.querySelectorAll('[data-back]').forEach(b=>b.onclick=()=>{show('menu');hud()});
 document.addEventListener('keydown',e=>{
   if($('game').hidden)return;const n=+e.key;
   if(n>=1&&n<=4){const b=$('answers').children[n-1];if(b)b.click()}
@@ -533,7 +818,7 @@ function confetti(){
   })();
 }
 
-chips();hud();show('menu');
+ensureMission();refreshAll();show('menu');
 addEventListener('resize',()=>{if(!$('menu').hidden)island()});
 }
 </script>
